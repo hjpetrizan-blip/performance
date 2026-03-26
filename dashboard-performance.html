@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP · Performance Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0d1421;
+  --bg3: #111827;
+  --panel: #0f1a2e;
+  --border: #1e3a5f;
+  --cyan: #00f5ff;
+  --cyan2: #00bcd4;
+  --green: #39ff14;
+  --yellow: #ffd600;
+  --orange: #ff6d00;
+  --red: #ff1744;
+  --purple: #d500f9;
+  --text: #c8d8f0;
+  --text2: #6a8aaa;
+  --text3: #3a5a7a;
+  --font-display: 'Orbitron', monospace;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: 
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(0,245,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 100% 100%, rgba(213,0,249,0.05) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,245,255,0.02) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,245,255,0.02) 40px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,12,20,0.95);
+  backdrop-filter: blur(10px);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--cyan);
+  text-shadow: 0 0 20px rgba(0,245,255,0.6);
+  letter-spacing: 3px;
+}
+.logo span { color: var(--text2); font-weight: 400; font-size: 12px; display: block; letter-spacing: 2px; margin-top: -2px; }
+
+.header-date {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text2);
+}
+.header-date strong { color: var(--cyan); display: block; font-size: 15px; }
+
+.btn-export {
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  text-transform: uppercase;
+}
+.btn-export:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 20px rgba(0,245,255,0.5); }
+
+/* TABS */
+nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 0 28px;
+  overflow-x: auto;
+}
+
+.tab {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  cursor: pointer;
+  color: var(--text3);
+  border-bottom: 2px solid transparent;
+  transition: all .2s;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--cyan); border-bottom-color: var(--cyan); text-shadow: 0 0 10px rgba(0,245,255,0.5); }
+
+/* MAIN */
+main {
+  position: relative;
+  z-index: 5;
+  padding: 24px 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn .3s ease; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* PANELS */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 20px;
+  position: relative;
+}
+.panel::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.5;
+}
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-title::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+/* STAT CARD */
+.stat-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 2px;
+  text-align: center;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* INPUTS */
+input, select, textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: 2px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px var(--cyan), inset 0 0 10px rgba(0,245,255,0.05);
+}
+select option { background: var(--bg3); }
+
+label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.form-group { margin-bottom: 14px; }
+
+/* BUTTONS */
+.btn {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .2s;
+  border: 1px solid;
+}
+.btn-cyan { background: rgba(0,245,255,0.1); border-color: var(--cyan); color: var(--cyan); }
+.btn-cyan:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 20px rgba(0,245,255,0.4); }
+.btn-green { background: rgba(57,255,20,0.1); border-color: var(--green); color: var(--green); }
+.btn-green:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 20px rgba(57,255,20,0.4); }
+.btn-red { background: rgba(255,23,68,0.1); border-color: var(--red); color: var(--red); }
+.btn-red:hover { background: var(--red); color: white; }
+.btn-sm { padding: 6px 12px; font-size: 9px; }
+.btn-block { width: 100%; }
+
+/* SEMAFORO */
+.semaforo {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.sem-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: all .2s;
+  border: 1px solid transparent;
+}
+.sem-dot.active { opacity: 1; }
+.sem-verde { background: var(--green); }
+.sem-verde.active { box-shadow: 0 0 8px var(--green); border-color: var(--green); }
+.sem-amarillo { background: var(--yellow); }
+.sem-amarillo.active { box-shadow: 0 0 8px var(--yellow); border-color: var(--yellow); }
+.sem-rojo { background: var(--red); }
+.sem-rojo.active { box-shadow: 0 0 8px var(--red); border-color: var(--red); }
+
+/* FOOD LOG */
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  transition: border-color .2s;
+}
+.food-item:hover { border-color: var(--cyan); }
+.food-name { flex: 1; font-size: 14px; }
+.food-cal { font-family: var(--font-mono); font-size: 12px; color: var(--text2); min-width: 60px; text-align: right; }
+.food-delete { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; transition: color .2s; }
+.food-delete:hover { color: var(--red); }
+
+.meal-section { margin-bottom: 20px; }
+.meal-header {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* CHARTS */
+.chart-container {
+  position: relative;
+  height: 180px;
+  margin-top: 12px;
+}
+
+canvas { width: 100% !important; }
+
+/* SLEEP BARS */
+.sleep-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.sleep-bar-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text2);
+  width: 90px;
+  flex-shrink: 0;
+}
+.sleep-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sleep-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .5s ease;
+}
+.sleep-bar-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* HEATMAP */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.hm-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+  cursor: default;
+  transition: all .2s;
+  position: relative;
+}
+.hm-cell.upper { background: rgba(0,245,255,0.15); border-color: var(--cyan); color: var(--cyan); }
+.hm-cell.lower { background: rgba(57,255,20,0.12); border-color: var(--green); color: var(--green); }
+.hm-cell.rest { background: rgba(106,138,170,0.08); }
+.hm-cell.today { box-shadow: 0 0 0 2px var(--yellow); }
+
+.hm-label-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.hm-label {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text3);
+}
+
+/* SCORE RING */
+.score-ring-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.score-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.score-ring svg {
+  transform: rotate(-90deg);
+  width: 120px;
+  height: 120px;
+}
+.score-ring .score-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+}
+.score-ring .score-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text2);
+  letter-spacing: 1px;
+}
+
+/* STREAK */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,214,0,0.1);
+  border: 1px solid var(--yellow);
+  color: var(--yellow);
+  font-family: var(--font-display);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(255,214,0,0.2);
+}
+
+/* WEIGHT ENTRY LIST */
+.entry-list {
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.entry-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(30,58,95,0.4);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.entry-row:last-child { border-bottom: none; }
+.entry-date { color: var(--text2); flex:1; }
+.entry-val { color: var(--text); font-weight: 600; min-width: 60px; }
+.entry-delta { min-width: 50px; text-align: right; }
+.delta-up { color: var(--red); }
+.delta-down { color: var(--green); }
+
+/* FEELING SELECTOR */
+.feeling-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.feeling-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .2s;
+}
+.feeling-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.feeling-btn.selected { background: rgba(0,245,255,0.1); border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 8px rgba(0,245,255,0.3); }
+
+/* OVERVIEW CARDS */
+.ov-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 220px;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .ov-grid { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  header { padding: 12px 16px; }
+  main { padding: 16px; }
+  nav { padding: 0 16px; }
+}
+
+.mt8 { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.mt24 { margin-top: 24px; }
+.flex { display: flex; }
+.gap8 { gap: 8px; }
+.gap12 { gap: 12px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.text-sm { font-size: 13px; color: var(--text2); }
+
+/* NOTIF */
+.notif {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--panel);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: 2px;
+  box-shadow: 0 0 20px rgba(0,245,255,0.3);
+  z-index: 1000;
+  animation: slideIn .3s ease, fadeOut .3s ease 2.2s forwards;
+}
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(20px); } }
+
+.calorie-bar {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.calorie-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s ease;
+}
+
+.section-gap { margin-bottom: 20px; }
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+.tag-upper { background: rgba(0,245,255,0.1); color: var(--cyan); border: 1px solid var(--cyan); }
+.tag-lower { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid var(--green); }
+.tag-rest { background: rgba(106,138,170,0.1); color: var(--text2); border: 1px solid var(--text3); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">HP PERFORMANCE<span>DASHBOARD · v1.0</span></div>
+  </div>
+  <div class="header-date">
+    <strong id="hdr-date"></strong>
+    <span id="hdr-time"></span>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-export" onclick="importData()">⬆ IMPORT JSON</button>
+    <button class="btn-export" onclick="exportData()">⬇ EXPORT JSON</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="switchTab('overview')">📊 OVERVIEW</button>
+  <button class="tab" onclick="switchTab('comidas')">🍽️ COMIDAS</button>
+  <button class="tab" onclick="switchTab('gym')">🏋️ GYM</button>
+  <button class="tab" onclick="switchTab('sueno')">😴 SUEÑO</button>
+  <button class="tab" onclick="switchTab('peso')">⚖️ PESO</button>
+</nav>
+
+<main>
+
+<!-- ============ OVERVIEW ============ -->
+<div id="tab-overview" class="tab-content active">
+  <div class="ov-grid">
+    <div class="panel">
+      <div class="panel-title">Calorías hoy</div>
+      <div class="stat-value" id="ov-cal" style="color:var(--cyan)">—</div>
+      <div class="stat-label">/ <span id="ov-cal-meta">2000</span> kcal meta</div>
+      <div class="calorie-bar"><div class="calorie-fill" id="ov-cal-bar" style="background:var(--cyan);width:0%"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Sueño anoche</div>
+      <div class="stat-value" id="ov-sleep" style="color:var(--purple)">—</div>
+      <div class="stat-label">horas totales</div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Peso actual</div>
+      <div class="stat-value" id="ov-peso" style="color:var(--green)">—</div>
+      <div class="stat-label">meta: 75.5 kg</div>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="panel-title" style="width:100%">Score semanal</div>
+      <div class="score-ring-container">
+        <div class="score-ring">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(30,58,95,0.6)" stroke-width="10"/>
+            <circle cx="60" cy="60" r="50" fill="none" id="score-arc"
+              stroke="var(--cyan)" stroke-width="10"
+              stroke-dasharray="314" stroke-dashoffset="314"
+              stroke-linecap="round"
+              style="transition:stroke-dashoffset 1s ease, stroke .5s"/>
+          </svg>
+          <div class="score-num"><span id="score-val">—</span><span class="score-lbl">SCORE</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Gym esta semana</div>
+      <div class="hm-label-row">
+        <div class="hm-label">L</div><div class="hm-label">M</div>
+        <div class="hm-label">X</div><div class="hm-label">J</div>
+        <div class="hm-label">V</div><div class="hm-label">S</div>
+        <div class="hm-label">D</div>
+      </div>
+      <div class="heatmap" id="ov-heatmap"></div>
+      <div class="flex gap8 mt16" style="flex-wrap:wrap">
+        <span class="tag tag-upper">■ UPPER</span>
+        <span class="tag tag-lower">■ LOWER</span>
+        <span class="tag tag-rest">■ DESCANSO</span>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Progreso de peso</div>
+      <div class="chart-container"><canvas id="ov-weight-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel mt16">
+    <div class="panel-title">Actividad reciente</div>
+    <div id="ov-recent" style="font-family:var(--font-mono);font-size:12px;color:var(--text2);line-height:2">
+      Sin actividad registrada aún.
+    </div>
+  </div>
+</div>
+
+<!-- ============ COMIDAS ============ -->
+<div id="tab-comidas" class="tab-content">
+  <div class="grid-2">
+    <div>
+      <!-- AGREGAR COMIDA -->
+      <div class="panel section-gap">
+        <div class="panel-title">Registrar comida</div>
+        <div class="form-group">
+          <label>Comida / Alimento</label>
+          <input type="text" id="food-name" placeholder="Ej: Pechuga de pollo a la plancha">
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Calorías (kcal)</label>
+            <input type="number" id="food-cal" placeholder="200" min="0">
+          </div>
+          <div class="form-group">
+            <label>Proteínas (g)</label>
+            <input type="number" id="food-prot" placeholder="30" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Momento del día</label>
+          <select id="food-meal">
+            <option value="desayuno">☀️ Desayuno</option>
+            <option value="almuerzo">🌤️ Almuerzo</option>
+            <option value="merienda">🍎 Merienda</option>
+            <option value="cena">🌙 Cena</option>
+            <option value="snack">🥜 Snack</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Calidad alimentaria</label>
+          <div class="flex gap12 items-center mt8">
+            <div class="semaforo" id="food-sem">
+              <div class="sem-dot sem-verde active" data-val="verde" onclick="setSem(this)"></div>
+              <div class="sem-dot sem-amarillo" data-val="amarillo" onclick="setSem(this)"></div>
+              <div class="sem-dot sem-rojo" data-val="rojo" onclick="setSem(this)"></div>
+            </div>
+            <span id="sem-label" style="font-family:var(--font-mono);font-size:12px;color:var(--green)">SALUDABLE</span>
+          </div>
+        </div>
+        <button class="btn btn-cyan btn-block" onclick="addFood()">+ AGREGAR COMIDA</button>
+      </div>
+
+      <!-- STATS DEL DÍA -->
+      <div class="panel">
+        <div class="panel-title">Totales del día</div>
+        <div class="grid-2">
+          <div class="stat-card">
+            <div class="stat-value" id="total-cal" style="color:var(--cyan)">0</div>
+            <div class="stat-label">kcal</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="total-prot" style="color:var(--green)">0g</div>
+            <div class="stat-label">proteínas</div>
+          </div>
+        </div>
+        <div class="mt16">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">CALORÍAS</span>
+            <span id="cal-pct" style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">0%</span>
+          </div>
+          <div class="calorie-bar" style="height:10px">
+            <div class="calorie-fill" id="cal-bar" style="background:linear-gradient(90deg,var(--cyan),var(--purple));width:0%"></div>
+          </div>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:10px">
+          Meta: <span id="meta-cal-lbl" style="color:var(--text2)">2000 kcal</span>
+          &nbsp;·&nbsp;
+          <button style="background:none;border:none;color:var(--cyan);cursor:pointer;font-family:var(--font-mono);font-size:11px;" onclick="editMeta()">editar meta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG DEL DÍA -->
+    <div class="panel">
+      <div class="panel-title">Log de hoy · <span id="log-date-lbl" style="color:var(--text2);text-transform:none;letter-spacing:0;font-family:var(--font-body)"></span></div>
+      <div id="food-log">
+        <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">
+          Ningún alimento registrado hoy.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GYM ============ -->
+<div id="tab-gym" class="tab-content">
+  <div class="grid-2">
+    <div>
+      <div class="panel section-gap">
+        <div class="panel-title">Registrar entrenamiento</div>
+        <div class="form-group">
+          <label>Tipo de sesión</label>
+          <div class="feeling-grid mt8">
+            <button class="feeling-btn selected" id="gym-tipo-upper" onclick="setGymTipo('upper')">UPPER 💪</button>
+            <button class="feeling-btn" id="gym-tipo-lower" onclick="setGymTipo('lower')">LOWER 🦵</button>
+            <button class="feeling-btn" id="gym-tipo-rest" onclick="setGymTipo('rest')">DESCANSO 😴</button>
+            <button class="feeling-btn" id="gym-tipo-cardio" onclick="setGymTipo('cardio')">CARDIO 🏃</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Duración (minutos)</label>
+          <input type="number" id="gym-dur" placeholder="45" min="0" max="240">
+        </div>
+        <div class="form-group">
+          <label>Sensación post-entreno</label>
+          <div class="feeling-grid mt8" id="gym-feeling-grid">
+            <button class="feeling-btn" onclick="setFeeling('💀 destruido')">💀 destruido</button>
+            <button class="feeling-btn" onclick="setFeeling('🔥 intenso')">🔥 intenso</button>
+            <button class="feeling-btn" onclick="setFeeling('✅ bueno')">✅ bueno</button>
+            <button class="feeling-btn" onclick="setFeeling('😐 regular')">😐 regular</button>
+            <button class="feeling-btn" onclick="setFeeling('🥱 flojo')">🥱 flojo</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Nota (opcional)</label>
+          <input type="text" id="gym-nota" placeholder="Ej: Aumenté el peso en press banca">
+        </div>
+        <button class="btn btn-green btn-block" onclick="saveGym()">+ GUARDAR ENTRENAMIENTO</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Semana actual</div>
+        <div class="hm-label-row">
+          <div class="hm-label">L</div><div class="hm-label">M</div>
+          <div class="hm-label">X</div><div class="hm-label">J</div>
+          <div class="hm-label">V</div><div class="hm-label">S</div>
+          <div class="hm-label">D</div>
+        </div>
+        <div class="heatmap" id="gym-heatmap"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Historial de sesiones</div>
+      <div class="entry-list" id="gym-history">
+        <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">Sin sesiones registradas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SUEÑO ============ -->
+<div id="tab-sueno" class="tab-content">
+  <div class="grid-2">
+    <div>
+      <div class="panel section-gap">
+        <div class="panel-title">Registrar sueño</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Total horas</label>
+            <input type="number" id="sleep-total" placeholder="7.5" min="0" max="12" step="0.5">
+          </div>
+          <div class="form-group">
+            <label>REM (horas)</label>
+            <input type="number" id="sleep-rem" placeholder="1.5" min="0" max="4" step="0.25">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Sueño profundo (h)</label>
+            <input type="number" id="sleep-deep" placeholder="1.0" min="0" max="4" step="0.25">
+          </div>
+          <div class="form-group">
+            <label>Hora de dormir</label>
+            <input type="time" id="sleep-hora" value="23:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Calidad percibida</label>
+          <div class="feeling-grid mt8" id="sleep-quality-grid">
+            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐⭐⭐ excelente')">⭐⭐⭐⭐⭐</button>
+            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐⭐ bueno')">⭐⭐⭐⭐</button>
+            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐ regular')">⭐⭐⭐</button>
+            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐ malo')">⭐⭐</button>
+            <button class="feeling-btn" onclick="setSleepQuality('⭐ pésimo')">⭐</button>
+          </div>
+        </div>
+        <button class="btn btn-cyan btn-block" onclick="saveSleep()">+ GUARDAR SUEÑO</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Promedios (últimos 7 días)</div>
+        <div class="sleep-bar-row">
+          <div class="sleep-bar-label">Total</div>
+          <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-total" style="background:var(--purple);width:0%"></div></div>
+          <div class="sleep-bar-val" id="sb-total-val">—</div>
+        </div>
+        <div class="sleep-bar-row">
+          <div class="sleep-bar-label">REM</div>
+          <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-rem" style="background:var(--cyan);width:0%"></div></div>
+          <div class="sleep-bar-val" id="sb-rem-val">—</div>
+        </div>
+        <div class="sleep-bar-row">
+          <div class="sleep-bar-label">Profundo</div>
+          <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-deep" style="background:var(--green);width:0%"></div></div>
+          <div class="sleep-bar-val" id="sb-deep-val">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Historial de sueño</div>
+      <div class="chart-container" style="height:160px"><canvas id="sleep-chart"></canvas></div>
+      <div class="entry-list mt16" id="sleep-history">
+        <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PESO ============ -->
+<div id="tab-peso" class="tab-content">
+  <div class="grid-2">
+    <div>
+      <div class="panel section-gap">
+        <div class="panel-title">Registrar peso</div>
+        <div class="form-group">
+          <label>Peso (kg)</label>
+          <input type="number" id="peso-val" placeholder="82.0" min="40" max="200" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Momento</label>
+          <select id="peso-moment">
+            <option value="mañana">🌅 Mañana (en ayunas)</option>
+            <option value="tarde">🌤️ Tarde</option>
+            <option value="noche">🌙 Noche</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nota (opcional)</label>
+          <input type="text" id="peso-nota" placeholder="Ej: Después del gym">
+        </div>
+        <button class="btn btn-green btn-block" onclick="savePeso()">+ GUARDAR PESO</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Stats de progreso</div>
+        <div class="grid-2">
+          <div class="stat-card">
+            <div class="stat-value" id="peso-inicio" style="color:var(--text2)">82.45</div>
+            <div class="stat-label">Peso inicial</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="peso-actual" style="color:var(--cyan)">—</div>
+            <div class="stat-label">Peso actual</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="peso-perdido" style="color:var(--green)">—</div>
+            <div class="stat-label">Perdido</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="peso-falta" style="color:var(--yellow)">—</div>
+            <div class="stat-label">Para la meta</div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">PROGRESO HACIA META</span>
+            <span id="peso-pct" style="font-family:var(--font-mono);font-size:11px;color:var(--green)">0%</span>
+          </div>
+          <div class="calorie-bar" style="height:10px">
+            <div class="calorie-fill" id="peso-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan));width:0%"></div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:6px">
+            Meta: 75.5 kg · Inicio: 82.45 kg (11 Mar 2026)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Curva de peso</div>
+      <div class="chart-container" style="height:200px"><canvas id="peso-chart"></canvas></div>
+      <div class="entry-list mt16" id="peso-history">
+        <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ==================== STATE ====================
+const META_CAL = 2000;
+const META_PESO = 75.5;
+const INICIO_PESO = 82.45;
+
+let state = {
+  calMeta: META_CAL,
+  foods: {},       // { 'YYYY-MM-DD': [ {name, cal, prot, meal, sem, ts} ] }
+  gym: {},         // { 'YYYY-MM-DD': { tipo, dur, feeling, nota, ts } }
+  sleep: {},       // { 'YYYY-MM-DD': { total, rem, deep, hora, quality, ts } }
+  peso: [],        // [ {date, val, moment, nota, ts} ]
+};
+
+// UI state
+let selectedSem = 'verde';
+let selectedFeeling = '';
+let selectedSleepQuality = '';
+let selectedGymTipo = 'upper';
+
+// ==================== STORAGE ====================
+function save() {
+  localStorage.setItem('hp_perf_v1', JSON.stringify(state));
+}
+function load() {
+  const d = localStorage.getItem('hp_perf_v1');
+  if (d) {
+    try { state = { ...state, ...JSON.parse(d) }; } catch(e) {}
+  }
+}
+
+// ==================== UTILS ====================
+function today() {
+  return new Date().toISOString().slice(0,10);
+}
+function fmt(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+function notif(msg) {
+  document.querySelectorAll('.notif').forEach(n => n.remove());
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.textContent = '✓ ' + msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2700);
+}
+
+// ==================== HEADER ====================
+function updateHeader() {
+  const now = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  document.getElementById('hdr-date').textContent = 
+    `${dias[now.getDay()]} ${now.getDate()} ${meses[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('hdr-time').textContent =
+    now.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateHeader, 1000);
+updateHeader();
+
+// ==================== TABS ====================
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  refreshAll();
+}
+
+// ==================== SEMAFORO ====================
+const semColors = { verde: ['var(--green)', 'SALUDABLE'], amarillo: ['var(--yellow)', 'MODERADO'], rojo: ['var(--red)', 'TRAMPA'] };
+function setSem(el) {
+  document.querySelectorAll('#food-sem .sem-dot').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  selectedSem = el.dataset.val;
+  const [color, label] = semColors[selectedSem];
+  const lbl = document.getElementById('sem-label');
+  lbl.textContent = label;
+  lbl.style.color = color;
+}
+
+// ==================== COMIDAS ====================
+function addFood() {
+  const name = document.getElementById('food-name').value.trim();
+  const cal = parseFloat(document.getElementById('food-cal').value) || 0;
+  const prot = parseFloat(document.getElementById('food-prot').value) || 0;
+  const meal = document.getElementById('food-meal').value;
+  if (!name) { alert('Ingresá el nombre de la comida.'); return; }
+  
+  const t = today();
+  if (!state.foods[t]) state.foods[t] = [];
+  state.foods[t].push({ name, cal, prot, meal, sem: selectedSem, ts: Date.now() });
+  save();
+  
+  document.getElementById('food-name').value = '';
+  document.getElementById('food-cal').value = '';
+  document.getElementById('food-prot').value = '';
+  
+  renderFoodLog();
+  notif('Comida agregada: ' + name);
+}
+
+const mealEmojis = { desayuno:'☀️', almuerzo:'🌤️', merienda:'🍎', cena:'🌙', snack:'🥜' };
+const semDot = { verde: '🟢', amarillo: '🟡', rojo: '🔴' };
+
+function renderFoodLog() {
+  const t = today();
+  const foods = state.foods[t] || [];
+  document.getElementById('log-date-lbl').textContent = fmt(t);
+  
+  const meals = ['desayuno','almuerzo','merienda','cena','snack'];
+  let html = '';
+  let totCal = 0, totProt = 0;
+  
+  meals.forEach(meal => {
+    const items = foods.filter(f => f.meal === meal);
+    if (!items.length) return;
+    const mCal = items.reduce((a,b) => a + b.cal, 0);
+    html += `<div class="meal-section">
+      <div class="meal-header">
+        <span>${mealEmojis[meal]} ${meal.toUpperCase()}</span>
+        <span style="color:var(--text2)">${mCal} kcal</span>
+      </div>`;
+    items.forEach((f, i) => {
+      const idx = foods.indexOf(f);
+      html += `<div class="food-item">
+        <span>${semDot[f.sem]}</span>
+        <span class="food-name">${f.name}</span>
+        ${f.prot ? `<span class="food-cal" style="color:var(--green)">${f.prot}g prot</span>` : ''}
+        <span class="food-cal">${f.cal} kcal</span>
+        <button class="food-delete" onclick="deleteFood('${t}',${idx})">×</button>
+      </div>`;
+      totCal += f.cal;
+      totProt += f.prot;
+    });
+    html += '</div>';
+  });
+  
+  if (!html) html = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">Ningún alimento registrado hoy.</div>';
+  
+  document.getElementById('food-log').innerHTML = html;
+  document.getElementById('total-cal').textContent = totCal;
+  document.getElementById('total-prot').textContent = totProt + 'g';
+  
+  const meta = state.calMeta || META_CAL;
+  const pct = Math.min(100, Math.round(totCal / meta * 100));
+  document.getElementById('cal-pct').textContent = pct + '%';
+  document.getElementById('cal-bar').style.width = pct + '%';
+  document.getElementById('cal-bar').style.background = pct > 110 ? 'var(--red)' : pct > 90 ? 'var(--yellow)' : 'linear-gradient(90deg,var(--cyan),var(--purple))';
+  document.getElementById('meta-cal-lbl').textContent = meta + ' kcal';
+}
+
+function deleteFood(date, idx) {
+  state.foods[date].splice(idx, 1);
+  save();
+  renderFoodLog();
+}
+
+function editMeta() {
+  const v = prompt('Meta calórica diaria (kcal):', state.calMeta || META_CAL);
+  if (v && !isNaN(v)) {
+    state.calMeta = parseInt(v);
+    save();
+    renderFoodLog();
+  }
+}
+
+// ==================== GYM ====================
+function setGymTipo(tipo) {
+  selectedGymTipo = tipo;
+  ['upper','lower','rest','cardio'].forEach(t => {
+    document.getElementById('gym-tipo-'+t).classList.toggle('selected', t === tipo);
+  });
+}
+function setFeeling(f) {
+  selectedFeeling = f;
+  document.querySelectorAll('#gym-feeling-grid .feeling-btn').forEach(b => {
+    b.classList.toggle('selected', b.textContent.trim() === f);
+  });
+}
+
+function saveGym() {
+  const dur = parseInt(document.getElementById('gym-dur').value) || 0;
+  const nota = document.getElementById('gym-nota').value.trim();
+  const t = today();
+  state.gym[t] = { tipo: selectedGymTipo, dur, feeling: selectedFeeling, nota, ts: Date.now() };
+  save();
+  document.getElementById('gym-dur').value = '';
+  document.getElementById('gym-nota').value = '';
+  renderGym();
+  notif('Entrenamiento guardado');
+}
+
+function renderGym() {
+  renderHeatmap('gym-heatmap', 7);
+  renderGymHistory();
+}
+
+function renderGymHistory() {
+  const entries = Object.entries(state.gym).sort((a,b) => b[0].localeCompare(a[0])).slice(0,20);
+  if (!entries.length) {
+    document.getElementById('gym-history').innerHTML = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">Sin sesiones registradas.</div>';
+    return;
+  }
+  const tipoTag = { upper:'tag-upper', lower:'tag-lower', rest:'tag-rest', cardio:'tag-rest' };
+  const tipoLabel = { upper:'UPPER', lower:'LOWER', rest:'REST', cardio:'CARDIO' };
+  let html = '';
+  entries.forEach(([date, g]) => {
+    html += `<div class="entry-row">
+      <span class="entry-date">${fmt(date)}</span>
+      <span class="tag ${tipoTag[g.tipo]||'tag-rest'}">${tipoLabel[g.tipo]||g.tipo.toUpperCase()}</span>
+      ${g.dur ? `<span style="color:var(--text2);font-size:11px">${g.dur}min</span>` : ''}
+      <span style="font-size:13px">${g.feeling||''}</span>
+      <button class="btn btn-sm btn-red" onclick="deleteGym('${date}')">×</button>
+    </div>`;
+    if (g.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 6px;border-bottom:1px solid rgba(30,58,95,0.4)">💬 ${g.nota}</div>`;
+  });
+  document.getElementById('gym-history').innerHTML = html;
+}
+
+function deleteGym(date) {
+  delete state.gym[date];
+  save();
+  renderGym();
+}
+
+function renderHeatmap(elId, days) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const now = new Date();
+  // Get monday of current week
+  const dow = now.getDay(); // 0=sun
+  const mondayOffset = dow === 0 ? -6 : -(dow - 1);
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + mondayOffset);
+  
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const key = d.toISOString().slice(0,10);
+    const g = state.gym[key];
+    const isToday = key === today();
+    let cls = '';
+    if (g) {
+      if (g.tipo === 'upper') cls = 'upper';
+      else if (g.tipo === 'lower') cls = 'lower';
+      else cls = 'rest';
+    }
+    if (isToday) cls += ' today';
+    const label = g ? (g.tipo === 'upper' ? 'U' : g.tipo === 'lower' ? 'L' : g.tipo === 'cardio' ? 'C' : '—') : d.getDate();
+    html += `<div class="hm-cell ${cls}" title="${key}">${label}</div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ==================== SUEÑO ====================
+function setSleepQuality(q) {
+  selectedSleepQuality = q;
+  document.querySelectorAll('#sleep-quality-grid .feeling-btn').forEach(b => {
+    b.classList.toggle('selected', b.textContent.trim() === q.split(' ')[0]);
+  });
+}
+
+function saveSleep() {
+  const total = parseFloat(document.getElementById('sleep-total').value);
+  const rem = parseFloat(document.getElementById('sleep-rem').value) || 0;
+  const deep = parseFloat(document.getElementById('sleep-deep').value) || 0;
+  const hora = document.getElementById('sleep-hora').value;
+  if (!total) { alert('Ingresá las horas totales.'); return; }
+  
+  const t = today();
+  state.sleep[t] = { total, rem, deep, hora, quality: selectedSleepQuality, ts: Date.now() };
+  save();
+  document.getElementById('sleep-total').value = '';
+  document.getElementById('sleep-rem').value = '';
+  document.getElementById('sleep-deep').value = '';
+  renderSleep();
+  notif('Sueño registrado');
+}
+
+let sleepChartInst = null;
+function renderSleep() {
+  // Promedios 7 días
+  const keys = Object.keys(state.sleep).sort().slice(-7);
+  if (keys.length) {
+    const avgTotal = keys.reduce((a,k) => a + state.sleep[k].total, 0) / keys.length;
+    const avgRem = keys.reduce((a,k) => a + state.sleep[k].rem, 0) / keys.length;
+    const avgDeep = keys.reduce((a,k) => a + state.sleep[k].deep, 0) / keys.length;
+    document.getElementById('sb-total').style.width = Math.min(100, avgTotal/9*100) + '%';
+    document.getElementById('sb-total-val').textContent = avgTotal.toFixed(1)+'h';
+    document.getElementById('sb-rem').style.width = Math.min(100, avgRem/3*100) + '%';
+    document.getElementById('sb-rem-val').textContent = avgRem.toFixed(1)+'h';
+    document.getElementById('sb-deep').style.width = Math.min(100, avgDeep/2*100) + '%';
+    document.getElementById('sb-deep-val').textContent = avgDeep.toFixed(1)+'h';
+  }
+  
+  // Chart
+  const allKeys = Object.keys(state.sleep).sort().slice(-14);
+  if (sleepChartInst) sleepChartInst.destroy();
+  const ctx = document.getElementById('sleep-chart').getContext('2d');
+  sleepChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: allKeys.map(k => fmt(k)),
+      datasets: [
+        { label: 'Total', data: allKeys.map(k => state.sleep[k].total), backgroundColor: 'rgba(213,0,249,0.4)', borderColor: 'rgba(213,0,249,0.8)', borderWidth: 1 },
+        { label: 'REM', data: allKeys.map(k => state.sleep[k].rem), backgroundColor: 'rgba(0,245,255,0.3)', borderColor: 'rgba(0,245,255,0.8)', borderWidth: 1 },
+        { label: 'Profundo', data: allKeys.map(k => state.sleep[k].deep), backgroundColor: 'rgba(57,255,20,0.3)', borderColor: 'rgba(57,255,20,0.8)', borderWidth: 1 },
+      ]
+    },
+    options: { ...chartDefaults(), scales: { ...chartScales(), y: { ...chartScales().y, max: 12, title: { display: true, text: 'horas', color: '#6a8aaa', font: { family: 'Share Tech Mono', size: 10 } } } } }
+  });
+  
+  // History
+  const entries = Object.entries(state.sleep).sort((a,b) => b[0].localeCompare(a[0])).slice(0,20);
+  if (!entries.length) {
+    document.getElementById('sleep-history').innerHTML = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>';
+    return;
+  }
+  let html = '';
+  entries.forEach(([date, s]) => {
+    const qualCol = s.total >= 7 ? 'var(--green)' : s.total >= 5.5 ? 'var(--yellow)' : 'var(--red)';
+    html += `<div class="entry-row">
+      <span class="entry-date">${fmt(date)}</span>
+      <span class="entry-val" style="color:${qualCol}">${s.total}h</span>
+      <span style="color:var(--cyan);font-size:11px">REM ${s.rem}h</span>
+      <span style="color:var(--green);font-size:11px">Prof ${s.deep}h</span>
+      <span style="font-size:13px">${s.quality ? s.quality.split(' ')[0] : ''}</span>
+      <button class="btn btn-sm btn-red" onclick="deleteSleep('${date}')">×</button>
+    </div>`;
+  });
+  document.getElementById('sleep-history').innerHTML = html;
+}
+
+function deleteSleep(date) {
+  delete state.sleep[date];
+  save();
+  renderSleep();
+}
+
+// ==================== PESO ====================
+let pesoChartInst = null;
+function savePeso() {
+  const val = parseFloat(document.getElementById('peso-val').value);
+  const moment = document.getElementById('peso-moment').value;
+  const nota = document.getElementById('peso-nota').value.trim();
+  if (!val || val < 40 || val > 200) { alert('Ingresá un peso válido.'); return; }
+  
+  const t = today();
+  // Remove existing entry for today if any
+  state.peso = state.peso.filter(p => p.date !== t);
+  state.peso.push({ date: t, val, moment, nota, ts: Date.now() });
+  state.peso.sort((a,b) => a.date.localeCompare(b.date));
+  save();
+  
+  document.getElementById('peso-val').value = '';
+  document.getElementById('peso-nota').value = '';
+  renderPeso();
+  notif('Peso guardado: ' + val + ' kg');
+}
+
+function renderPeso() {
+  const entries = [...state.peso].sort((a,b) => a.date.localeCompare(b.date));
+  
+  // Stats
+  const last = entries[entries.length - 1];
+  if (last) {
+    document.getElementById('peso-actual').textContent = last.val.toFixed(1) + ' kg';
+    const perdido = INICIO_PESO - last.val;
+    document.getElementById('peso-perdido').textContent = (perdido > 0 ? '-' : '+') + Math.abs(perdido).toFixed(1) + ' kg';
+    document.getElementById('peso-perdido').style.color = perdido > 0 ? 'var(--green)' : 'var(--red)';
+    const falta = last.val - META_PESO;
+    document.getElementById('peso-falta').textContent = (falta > 0 ? '-' : '✓ ') + Math.abs(falta).toFixed(1) + ' kg';
+    const totalToLose = INICIO_PESO - META_PESO;
+    const lost = INICIO_PESO - last.val;
+    const pct = Math.max(0, Math.min(100, Math.round(lost / totalToLose * 100)));
+    document.getElementById('peso-pct').textContent = pct + '%';
+    document.getElementById('peso-bar').style.width = pct + '%';
+  }
+  
+  // Chart
+  if (pesoChartInst) pesoChartInst.destroy();
+  const ctx = document.getElementById('peso-chart').getContext('2d');
+  const labels = entries.map(e => fmt(e.date));
+  const vals = entries.map(e => e.val);
+  
+  // Add meta line
+  const metaLine = entries.map(() => META_PESO);
+  
+  pesoChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Peso',
+          data: vals,
+          borderColor: 'rgba(0,245,255,0.9)',
+          backgroundColor: 'rgba(0,245,255,0.05)',
+          borderWidth: 2,
+          pointBackgroundColor: 'var(--cyan)',
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: 'Meta',
+          data: metaLine,
+          borderColor: 'rgba(57,255,20,0.5)',
+          borderWidth: 1,
+          borderDash: [6,4],
+          pointRadius: 0,
+          tension: 0,
+        }
+      ]
+    },
+    options: { ...chartDefaults(), scales: { ...chartScales(), y: { ...chartScales().y, suggestedMin: META_PESO - 1, suggestedMax: INICIO_PESO + 1 } } }
+  });
+  
+  // History
+  if (!entries.length) {
+    document.getElementById('peso-history').innerHTML = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>';
+    return;
+  }
+  let html = '';
+  [...entries].reverse().slice(0,30).forEach((e, i, arr) => {
+    const prev = arr[i+1];
+    const delta = prev ? e.val - prev.val : null;
+    const deltaHtml = delta !== null ? `<span class="entry-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</span>` : '<span class="entry-delta" style="color:var(--text3)">—</span>';
+    html += `<div class="entry-row">
+      <span class="entry-date">${fmt(e.date)} · ${e.moment}</span>
+      <span class="entry-val">${e.val.toFixed(1)} kg</span>
+      ${deltaHtml}
+      <button class="btn btn-sm btn-red" onclick="deletePeso('${e.date}')">×</button>
+    </div>`;
+    if (e.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 4px">💬 ${e.nota}</div>`;
+  });
+  document.getElementById('peso-history').innerHTML = html;
+}
+
+function deletePeso(date) {
+  state.peso = state.peso.filter(p => p.date !== date);
+  save();
+  renderPeso();
+}
+
+// ==================== CHART DEFAULTS ====================
+function chartDefaults() {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#6a8aaa',
+          font: { family: 'Share Tech Mono', size: 10 },
+          boxWidth: 12,
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(13,20,33,0.95)',
+        borderColor: '#1e3a5f',
+        borderWidth: 1,
+        titleColor: '#00f5ff',
+        bodyColor: '#c8d8f0',
+        titleFont: { family: 'Share Tech Mono', size: 11 },
+        bodyFont: { family: 'Rajdhani', size: 13 },
+      }
+    }
+  };
+}
+function chartScales() {
+  const gridColor = 'rgba(30,58,95,0.4)';
+  const tickColor = '#6a8aaa';
+  const cfg = {
+    grid: { color: gridColor },
+    ticks: { color: tickColor, font: { family: 'Share Tech Mono', size: 10 } },
+    border: { color: 'rgba(30,58,95,0.4)' }
+  };
+  return { x: cfg, y: cfg };
+}
+
+// ==================== OVERVIEW ====================
+let ovWeightChartInst = null;
+function renderOverview() {
+  // Cal hoy
+  const t = today();
+  const foods = state.foods[t] || [];
+  const cal = foods.reduce((a,b) => a + b.cal, 0);
+  const meta = state.calMeta || META_CAL;
+  document.getElementById('ov-cal').textContent = cal;
+  document.getElementById('ov-cal-meta').textContent = meta;
+  const calPct = Math.min(100, cal/meta*100);
+  document.getElementById('ov-cal-bar').style.width = calPct + '%';
+  
+  // Sueño
+  const sleepToday = state.sleep[t];
+  document.getElementById('ov-sleep').textContent = sleepToday ? sleepToday.total + 'h' : '—';
+  
+  // Peso
+  const lastPeso = state.peso[state.peso.length - 1];
+  document.getElementById('ov-peso').textContent = lastPeso ? lastPeso.val.toFixed(1) + ' kg' : '—';
+  
+  // Score semanal (0-100)
+  const score = calcScore();
+  document.getElementById('score-val').textContent = score;
+  const arc = document.getElementById('score-arc');
+  const offset = 314 - (314 * score / 100);
+  arc.style.strokeDashoffset = offset;
+  arc.style.stroke = score >= 75 ? 'var(--green)' : score >= 50 ? 'var(--cyan)' : score >= 25 ? 'var(--yellow)' : 'var(--red)';
+  
+  // Heatmap
+  renderHeatmap('ov-heatmap', 7);
+  
+  // Weight chart mini
+  if (ovWeightChartInst) ovWeightChartInst.destroy();
+  const entries = [...state.peso].sort((a,b) => a.date.localeCompare(b.date)).slice(-14);
+  const ctx2 = document.getElementById('ov-weight-chart').getContext('2d');
+  ovWeightChartInst = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: entries.map(e => fmt(e.date)),
+      datasets: [{
+        data: entries.map(e => e.val),
+        borderColor: 'rgba(0,245,255,0.8)',
+        backgroundColor: 'rgba(0,245,255,0.05)',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: 'var(--cyan)',
+        tension: 0.3,
+        fill: true,
+        label: 'kg'
+      }, {
+        data: entries.map(() => META_PESO),
+        borderColor: 'rgba(57,255,20,0.4)',
+        borderWidth: 1,
+        borderDash: [5,4],
+        pointRadius: 0,
+        label: 'meta'
+      }]
+    },
+    options: { ...chartDefaults(), scales: { ...chartScales(), y: { ...chartScales().y, suggestedMin: META_PESO-1, suggestedMax: INICIO_PESO+1 } } }
+  });
+  
+  // Recent activity
+  const recents = [];
+  Object.entries(state.gym).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,3).forEach(([d,g]) => {
+    recents.push(`${fmt(d)} · 🏋️ ${g.tipo.toUpperCase()} ${g.dur ? g.dur+'min' : ''} ${g.feeling||''}`);
+  });
+  Object.entries(state.sleep).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,2).forEach(([d,s]) => {
+    recents.push(`${fmt(d)} · 😴 Sueño ${s.total}h`);
+  });
+  state.peso.slice(-2).reverse().forEach(p => {
+    recents.push(`${fmt(p.date)} · ⚖️ Peso ${p.val.toFixed(1)} kg`);
+  });
+  recents.sort((a,b) => b.slice(0,8).localeCompare(a.slice(0,8)));
+  document.getElementById('ov-recent').innerHTML = recents.slice(0,6).map(r => `<div style="padding:4px 0;border-bottom:1px solid rgba(30,58,95,0.3)">${r}</div>`).join('') || 'Sin actividad registrada aún.';
+}
+
+function calcScore() {
+  // Score semanal basado en gym (40%) + sueño (30%) + peso (30%)
+  let total = 0, max = 0;
+  
+  // Gym: 4 días/sem esperados (L,M,J,V)
+  const gymKeys = Object.keys(state.gym);
+  const now = new Date();
+  const dow = now.getDay();
+  const mondayOffset = dow === 0 ? -6 : -(dow-1);
+  const monday = new Date(now); monday.setDate(now.getDate() + mondayOffset);
+  let gymDays = 0;
+  for (let i=0;i<7;i++) {
+    const d = new Date(monday); d.setDate(monday.getDate()+i);
+    const key = d.toISOString().slice(0,10);
+    if (state.gym[key] && state.gym[key].tipo !== 'rest') gymDays++;
+  }
+  // Expected days passed in week
+  const daysPassed = Math.min(dow === 0 ? 7 : dow, 5);
+  const gymScore = Math.min(40, Math.round(gymDays / 4 * 40));
+  total += gymScore; max += 40;
+  
+  // Sueño: prom 7 días, meta 7h
+  const sleepKeys = Object.keys(state.sleep).sort().slice(-7);
+  if (sleepKeys.length) {
+    const avg = sleepKeys.reduce((a,k) => a + state.sleep[k].total, 0) / sleepKeys.length;
+    const sleepScore = Math.min(30, Math.round(Math.min(avg,9)/9*30));
+    total += sleepScore;
+  }
+  max += 30;
+  
+  // Peso: si está bajando
+  if (state.peso.length >= 2) {
+    const first = state.peso[0].val;
+    const last = state.peso[state.peso.length-1].val;
+    const delta = first - last;
+    const pesoScore = delta > 0 ? Math.min(30, Math.round(delta/6.95*30)) : 0;
+    total += pesoScore;
+  } else if (state.peso.length === 1) {
+    total += 15;
+  }
+  max += 30;
+  
+  return max > 0 ? Math.round(total/max*100) : 0;
+}
+
+// ==================== EXPORT ====================
+function importData() {
+  document.getElementById('import-file').click();
+}
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (confirm('⚠️ Esto reemplaza todos los datos actuales. ¿Confirmar?')) {
+        state = { ...state, ...imported };
+        save();
+        refreshAll();
+        notif('Datos importados correctamente');
+      }
+    } catch(err) {
+      alert('Error al leer el archivo JSON.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `hp_performance_${today()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ==================== REFRESH ALL ====================
+function refreshAll() {
+  renderFoodLog();
+  renderGym();
+  renderSleep();
+  renderPeso();
+  renderOverview();
+}
+
+// ==================== INIT ====================
+load();
+refreshAll();
+</script>
+</body>
+</html>
