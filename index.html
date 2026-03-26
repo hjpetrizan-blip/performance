@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HP Â· Performance Dashboard</title>
+<title>HP · Performance Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -601,7 +601,7 @@ canvas { width: 100% !important; }
 
 <header>
   <div>
-    <div class="logo">HP PERFORMANCE<span>DASHBOARD Â· v1.0</span></div>
+    <div class="logo">HP PERFORMANCE<span>DASHBOARD · v1.0</span></div>
   </div>
   <div class="header-date">
     <strong id="hdr-date"></strong>
@@ -618,7 +618,7 @@ canvas { width: 100% !important; }
   <button class="tab active" onclick="switchTab('overview')">ð OVERVIEW</button>
   <button class="tab" onclick="switchTab('comidas')">ð½ï¸ COMIDAS</button>
   <button class="tab" onclick="switchTab('gym')">ðï¸ GYM</button>
-  <button class="tab" onclick="switchTab('sueno')">ð´ SUEÃO</button>
+  <button class="tab" onclick="switchTab('sueno')">ð´ SUEÁO</button>
   <button class="tab" onclick="switchTab('peso')">âï¸ PESO</button>
 </nav>
 
@@ -628,13 +628,13 @@ canvas { width: 100% !important; }
 <div id="tab-overview" class="tab-content active">
   <div class="ov-grid">
     <div class="panel">
-      <div class="panel-title">CalorÃ­as hoy</div>
+      <div class="panel-title">Calorías hoy</div>
       <div class="stat-value" id="ov-cal" style="color:var(--cyan)">â</div>
       <div class="stat-label">/ <span id="ov-cal-meta">2000</span> kcal meta</div>
       <div class="calorie-bar"><div class="calorie-fill" id="ov-cal-bar" style="background:var(--cyan);width:0%"></div></div>
     </div>
     <div class="panel">
-      <div class="panel-title">SueÃ±o anoche</div>
+      <div class="panel-title">Sueño anoche</div>
       <div class="stat-value" id="ov-sleep" style="color:var(--purple)">â</div>
       <div class="stat-label">horas totales</div>
     </div>
@@ -686,7 +686,7 @@ canvas { width: 100% !important; }
   <div class="panel mt16">
     <div class="panel-title">Actividad reciente</div>
     <div id="ov-recent" style="font-family:var(--font-mono);font-size:12px;color:var(--text2);line-height:2">
-      Sin actividad registrada aÃºn.
+      Sin actividad registrada aún.
     </div>
   </div>
 </div>
@@ -707,16 +707,16 @@ canvas { width: 100% !important; }
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label>CalorÃ­as (kcal)</label>
+            <label>Calorías (kcal)</label>
             <input type="number" id="food-cal" placeholder="200" min="0">
           </div>
           <div class="form-group">
-            <label>ProteÃ­nas (g)</label>
+            <label>Proteínas (g)</label>
             <input type="number" id="food-prot" placeholder="30" min="0">
           </div>
         </div>
         <div class="form-group">
-          <label>Momento del dÃ­a</label>
+          <label>Momento del día</label>
           <select id="food-meal">
             <option value="desayuno">âï¸ Desayuno</option>
             <option value="almuerzo">ð¤ï¸ Almuerzo</option>
@@ -739,9 +739,9 @@ canvas { width: 100% !important; }
         <button class="btn btn-cyan btn-block" onclick="addFood()">+ AGREGAR COMIDA</button>
       </div>
 
-      <!-- STATS DEL DÃA -->
+      <!-- STATS DEL DÁA -->
       <div class="panel">
-        <div class="panel-title">Totales del dÃ­a</div>
+        <div class="panel-title">Totales del día</div>
         <div class="grid-2">
           <div class="stat-card">
             <div class="stat-value" id="total-cal" style="color:var(--cyan)">0</div>
@@ -749,12 +749,12 @@ canvas { width: 100% !important; }
           </div>
           <div class="stat-card">
             <div class="stat-value" id="total-prot" style="color:var(--green)">0g</div>
-            <div class="stat-label">proteÃ­nas</div>
+            <div class="stat-label">proteínas</div>
           </div>
         </div>
         <div class="mt16">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">CALORÃAS</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">CALORÁAS</span>
             <span id="cal-pct" style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">0%</span>
           </div>
           <div class="calorie-bar" style="height:10px">
@@ -763,18 +763,18 @@ canvas { width: 100% !important; }
         </div>
         <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:10px">
           Meta: <span id="meta-cal-lbl" style="color:var(--text2)">2000 kcal</span>
-          &nbsp;Â·&nbsp;
+          &nbsp;·&nbsp;
           <button style="background:none;border:none;color:var(--cyan);cursor:pointer;font-family:var(--font-mono);font-size:11px;" onclick="editMeta()">editar meta</button>
         </div>
       </div>
     </div>
 
-    <!-- LOG DEL DÃA -->
+    <!-- LOG DEL DÁA -->
     <div class="panel">
-      <div class="panel-title">Log de hoy Â· <span id="log-date-lbl" style="color:var(--text2);text-transform:none;letter-spacing:0;font-family:var(--font-body)"></span></div>
+      <div class="panel-title">Log de hoy · <span id="log-date-lbl" style="color:var(--text2);text-transform:none;letter-spacing:0;font-family:var(--font-body)"></span></div>
       <div id="food-log">
         <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">
-          NingÃºn alimento registrado hoy.
+          Ningún alimento registrado hoy.
         </div>
       </div>
     </div>
@@ -788,7 +788,7 @@ canvas { width: 100% !important; }
       <div class="panel section-gap">
         <div class="panel-title">Registrar entrenamiento</div>
         <div class="form-group">
-          <label>Tipo de sesiÃ³n</label>
+          <label>Tipo de sesión</label>
           <div class="feeling-grid mt8">
             <button class="feeling-btn selected" id="gym-tipo-upper" onclick="setGymTipo('upper')">UPPER ðª</button>
             <button class="feeling-btn" id="gym-tipo-lower" onclick="setGymTipo('lower')">LOWER ð¦µ</button>
@@ -797,11 +797,11 @@ canvas { width: 100% !important; }
           </div>
         </div>
         <div class="form-group">
-          <label>DuraciÃ³n (minutos)</label>
+          <label>Duración (minutos)</label>
           <input type="number" id="gym-dur" placeholder="45" min="0" max="240">
         </div>
         <div class="form-group">
-          <label>SensaciÃ³n post-entreno</label>
+          <label>Sensación post-entreno</label>
           <div class="feeling-grid mt8" id="gym-feeling-grid">
             <button class="feeling-btn" onclick="setFeeling('ð destruido')">ð destruido</button>
             <button class="feeling-btn" onclick="setFeeling('ð¥ intenso')">ð¥ intenso</button>
@@ -812,7 +812,7 @@ canvas { width: 100% !important; }
         </div>
         <div class="form-group">
           <label>Nota (opcional)</label>
-          <input type="text" id="gym-nota" placeholder="Ej: AumentÃ© el peso en press banca">
+          <input type="text" id="gym-nota" placeholder="Ej: Aumenté el peso en press banca">
         </div>
         <button class="btn btn-green btn-block" onclick="saveGym()">+ GUARDAR ENTRENAMIENTO</button>
       </div>
@@ -838,12 +838,12 @@ canvas { width: 100% !important; }
   </div>
 </div>
 
-<!-- ============ SUEÃO ============ -->
+<!-- ============ SUEÁO ============ -->
 <div id="tab-sueno" class="tab-content">
   <div class="grid-2">
     <div>
       <div class="panel section-gap">
-        <div class="panel-title">Registrar sueÃ±o</div>
+        <div class="panel-title">Registrar sueño</div>
         <div class="grid-2">
           <div class="form-group">
             <label>Total horas</label>
@@ -856,7 +856,7 @@ canvas { width: 100% !important; }
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label>SueÃ±o profundo (h)</label>
+            <label>Sueño profundo (h)</label>
             <input type="number" id="sleep-deep" placeholder="1.0" min="0" max="4" step="0.25">
           </div>
           <div class="form-group">
@@ -871,14 +871,14 @@ canvas { width: 100% !important; }
             <button class="feeling-btn" onclick="setSleepQuality('â­â­â­â­ bueno')">â­â­â­â­</button>
             <button class="feeling-btn" onclick="setSleepQuality('â­â­â­ regular')">â­â­â­</button>
             <button class="feeling-btn" onclick="setSleepQuality('â­â­ malo')">â­â­</button>
-            <button class="feeling-btn" onclick="setSleepQuality('â­ pÃ©simo')">â­</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­ pésimo')">â­</button>
           </div>
         </div>
-        <button class="btn btn-cyan btn-block" onclick="saveSleep()">+ GUARDAR SUEÃO</button>
+        <button class="btn btn-cyan btn-block" onclick="saveSleep()">+ GUARDAR SUEÁO</button>
       </div>
 
       <div class="panel">
-        <div class="panel-title">Promedios (Ãºltimos 7 dÃ­as)</div>
+        <div class="panel-title">Promedios (últimos 7 días)</div>
         <div class="sleep-bar-row">
           <div class="sleep-bar-label">Total</div>
           <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-total" style="background:var(--purple);width:0%"></div></div>
@@ -898,7 +898,7 @@ canvas { width: 100% !important; }
     </div>
 
     <div class="panel">
-      <div class="panel-title">Historial de sueÃ±o</div>
+      <div class="panel-title">Historial de sueño</div>
       <div class="chart-container" style="height:160px"><canvas id="sleep-chart"></canvas></div>
       <div class="entry-list mt16" id="sleep-history">
         <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>
@@ -920,14 +920,14 @@ canvas { width: 100% !important; }
         <div class="form-group">
           <label>Momento</label>
           <select id="peso-moment">
-            <option value="maÃ±ana">ð MaÃ±ana (en ayunas)</option>
+            <option value="mañana">ð Mañana (en ayunas)</option>
             <option value="tarde">ð¤ï¸ Tarde</option>
             <option value="noche">ð Noche</option>
           </select>
         </div>
         <div class="form-group">
           <label>Nota (opcional)</label>
-          <input type="text" id="peso-nota" placeholder="Ej: DespuÃ©s del gym">
+          <input type="text" id="peso-nota" placeholder="Ej: Después del gym">
         </div>
         <button class="btn btn-green btn-block" onclick="savePeso()">+ GUARDAR PESO</button>
       </div>
@@ -961,7 +961,7 @@ canvas { width: 100% !important; }
             <div class="calorie-fill" id="peso-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan));width:0%"></div>
           </div>
           <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:6px">
-            Meta: 75.5 kg Â· Inicio: 82.45 kg (11 Mar 2026)
+            Meta: 75.5 kg · Inicio: 82.45 kg (11 Mar 2026)
           </div>
         </div>
       </div>
@@ -1032,7 +1032,7 @@ function notif(msg) {
 // ==================== HEADER ====================
 function updateHeader() {
   const now = new Date();
-  const dias = ['Domingo','Lunes','Martes','MiÃ©rcoles','Jueves','Viernes','SÃ¡bado'];
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   document.getElementById('hdr-date').textContent = 
     `${dias[now.getDay()]} ${now.getDate()} ${meses[now.getMonth()]} ${now.getFullYear()}`;
@@ -1069,7 +1069,7 @@ function addFood() {
   const cal = parseFloat(document.getElementById('food-cal').value) || 0;
   const prot = parseFloat(document.getElementById('food-prot').value) || 0;
   const meal = document.getElementById('food-meal').value;
-  if (!name) { alert('IngresÃ¡ el nombre de la comida.'); return; }
+  if (!name) { alert('Ingresá el nombre de la comida.'); return; }
   
   const t = today();
   if (!state.foods[t]) state.foods[t] = [];
@@ -1112,7 +1112,7 @@ function renderFoodLog() {
         <span class="food-name">${f.name}</span>
         ${f.prot ? `<span class="food-cal" style="color:var(--green)">${f.prot}g prot</span>` : ''}
         <span class="food-cal">${f.cal} kcal</span>
-        <button class="food-delete" onclick="deleteFood('${t}',${idx})">Ã</button>
+        <button class="food-delete" onclick="deleteFood('${t}',${idx})">Á</button>
       </div>`;
       totCal += f.cal;
       totProt += f.prot;
@@ -1120,7 +1120,7 @@ function renderFoodLog() {
     html += '</div>';
   });
   
-  if (!html) html = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">NingÃºn alimento registrado hoy.</div>';
+  if (!html) html = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">Ningún alimento registrado hoy.</div>';
   
   document.getElementById('food-log').innerHTML = html;
   document.getElementById('total-cal').textContent = totCal;
@@ -1141,7 +1141,7 @@ function deleteFood(date, idx) {
 }
 
 function editMeta() {
-  const v = prompt('Meta calÃ³rica diaria (kcal):', state.calMeta || META_CAL);
+  const v = prompt('Meta calórica diaria (kcal):', state.calMeta || META_CAL);
   if (v && !isNaN(v)) {
     state.calMeta = parseInt(v);
     save();
@@ -1195,7 +1195,7 @@ function renderGymHistory() {
       <span class="tag ${tipoTag[g.tipo]||'tag-rest'}">${tipoLabel[g.tipo]||g.tipo.toUpperCase()}</span>
       ${g.dur ? `<span style="color:var(--text2);font-size:11px">${g.dur}min</span>` : ''}
       <span style="font-size:13px">${g.feeling||''}</span>
-      <button class="btn btn-sm btn-red" onclick="deleteGym('${date}')">Ã</button>
+      <button class="btn btn-sm btn-red" onclick="deleteGym('${date}')">Á</button>
     </div>`;
     if (g.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 6px;border-bottom:1px solid rgba(30,58,95,0.4)">ð¬ ${g.nota}</div>`;
   });
@@ -1238,7 +1238,7 @@ function renderHeatmap(elId, days) {
   el.innerHTML = html;
 }
 
-// ==================== SUEÃO ====================
+// ==================== SUEÁO ====================
 function setSleepQuality(q) {
   selectedSleepQuality = q;
   document.querySelectorAll('#sleep-quality-grid .feeling-btn').forEach(b => {
@@ -1251,7 +1251,7 @@ function saveSleep() {
   const rem = parseFloat(document.getElementById('sleep-rem').value) || 0;
   const deep = parseFloat(document.getElementById('sleep-deep').value) || 0;
   const hora = document.getElementById('sleep-hora').value;
-  if (!total) { alert('IngresÃ¡ las horas totales.'); return; }
+  if (!total) { alert('Ingresá las horas totales.'); return; }
   
   const t = today();
   state.sleep[t] = { total, rem, deep, hora, quality: selectedSleepQuality, ts: Date.now() };
@@ -1260,12 +1260,12 @@ function saveSleep() {
   document.getElementById('sleep-rem').value = '';
   document.getElementById('sleep-deep').value = '';
   renderSleep();
-  notif('SueÃ±o registrado');
+  notif('Sueño registrado');
 }
 
 let sleepChartInst = null;
 function renderSleep() {
-  // Promedios 7 dÃ­as
+  // Promedios 7 días
   const keys = Object.keys(state.sleep).sort().slice(-7);
   if (keys.length) {
     const avgTotal = keys.reduce((a,k) => a + state.sleep[k].total, 0) / keys.length;
@@ -1311,7 +1311,7 @@ function renderSleep() {
       <span style="color:var(--cyan);font-size:11px">REM ${s.rem}h</span>
       <span style="color:var(--green);font-size:11px">Prof ${s.deep}h</span>
       <span style="font-size:13px">${s.quality ? s.quality.split(' ')[0] : ''}</span>
-      <button class="btn btn-sm btn-red" onclick="deleteSleep('${date}')">Ã</button>
+      <button class="btn btn-sm btn-red" onclick="deleteSleep('${date}')">Á</button>
     </div>`;
   });
   document.getElementById('sleep-history').innerHTML = html;
@@ -1329,7 +1329,7 @@ function savePeso() {
   const val = parseFloat(document.getElementById('peso-val').value);
   const moment = document.getElementById('peso-moment').value;
   const nota = document.getElementById('peso-nota').value.trim();
-  if (!val || val < 40 || val > 200) { alert('IngresÃ¡ un peso vÃ¡lido.'); return; }
+  if (!val || val < 40 || val > 200) { alert('Ingresá un peso válido.'); return; }
   
   const t = today();
   // Remove existing entry for today if any
@@ -1413,10 +1413,10 @@ function renderPeso() {
     const delta = prev ? e.val - prev.val : null;
     const deltaHtml = delta !== null ? `<span class="entry-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</span>` : '<span class="entry-delta" style="color:var(--text3)">â</span>';
     html += `<div class="entry-row">
-      <span class="entry-date">${fmt(e.date)} Â· ${e.moment}</span>
+      <span class="entry-date">${fmt(e.date)} · ${e.moment}</span>
       <span class="entry-val">${e.val.toFixed(1)} kg</span>
       ${deltaHtml}
-      <button class="btn btn-sm btn-red" onclick="deletePeso('${e.date}')">Ã</button>
+      <button class="btn btn-sm btn-red" onclick="deletePeso('${e.date}')">Á</button>
     </div>`;
     if (e.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 4px">ð¬ ${e.nota}</div>`;
   });
@@ -1478,7 +1478,7 @@ function renderOverview() {
   const calPct = Math.min(100, cal/meta*100);
   document.getElementById('ov-cal-bar').style.width = calPct + '%';
   
-  // SueÃ±o
+  // Sueño
   const sleepToday = state.sleep[t];
   document.getElementById('ov-sleep').textContent = sleepToday ? sleepToday.total + 'h' : 'â';
   
@@ -1530,23 +1530,23 @@ function renderOverview() {
   // Recent activity
   const recents = [];
   Object.entries(state.gym).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,3).forEach(([d,g]) => {
-    recents.push(`${fmt(d)} Â· ðï¸ ${g.tipo.toUpperCase()} ${g.dur ? g.dur+'min' : ''} ${g.feeling||''}`);
+    recents.push(`${fmt(d)} · ðï¸ ${g.tipo.toUpperCase()} ${g.dur ? g.dur+'min' : ''} ${g.feeling||''}`);
   });
   Object.entries(state.sleep).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,2).forEach(([d,s]) => {
-    recents.push(`${fmt(d)} Â· ð´ SueÃ±o ${s.total}h`);
+    recents.push(`${fmt(d)} · ð´ Sueño ${s.total}h`);
   });
   state.peso.slice(-2).reverse().forEach(p => {
-    recents.push(`${fmt(p.date)} Â· âï¸ Peso ${p.val.toFixed(1)} kg`);
+    recents.push(`${fmt(p.date)} · âï¸ Peso ${p.val.toFixed(1)} kg`);
   });
   recents.sort((a,b) => b.slice(0,8).localeCompare(a.slice(0,8)));
-  document.getElementById('ov-recent').innerHTML = recents.slice(0,6).map(r => `<div style="padding:4px 0;border-bottom:1px solid rgba(30,58,95,0.3)">${r}</div>`).join('') || 'Sin actividad registrada aÃºn.';
+  document.getElementById('ov-recent').innerHTML = recents.slice(0,6).map(r => `<div style="padding:4px 0;border-bottom:1px solid rgba(30,58,95,0.3)">${r}</div>`).join('') || 'Sin actividad registrada aún.';
 }
 
 function calcScore() {
-  // Score semanal basado en gym (40%) + sueÃ±o (30%) + peso (30%)
+  // Score semanal basado en gym (40%) + sueño (30%) + peso (30%)
   let total = 0, max = 0;
   
-  // Gym: 4 dÃ­as/sem esperados (L,M,J,V)
+  // Gym: 4 días/sem esperados (L,M,J,V)
   const gymKeys = Object.keys(state.gym);
   const now = new Date();
   const dow = now.getDay();
@@ -1563,7 +1563,7 @@ function calcScore() {
   const gymScore = Math.min(40, Math.round(gymDays / 4 * 40));
   total += gymScore; max += 40;
   
-  // SueÃ±o: prom 7 dÃ­as, meta 7h
+  // Sueño: prom 7 días, meta 7h
   const sleepKeys = Object.keys(state.sleep).sort().slice(-7);
   if (sleepKeys.length) {
     const avg = sleepKeys.reduce((a,k) => a + state.sleep[k].total, 0) / sleepKeys.length;
@@ -1572,7 +1572,7 @@ function calcScore() {
   }
   max += 30;
   
-  // Peso: si estÃ¡ bajando
+  // Peso: si está bajando
   if (state.peso.length >= 2) {
     const first = state.peso[0].val;
     const last = state.peso[state.peso.length-1].val;
@@ -1598,7 +1598,7 @@ function handleImport(e) {
   reader.onload = function(ev) {
     try {
       const imported = JSON.parse(ev.target.result);
-      if (confirm('â ï¸ Esto reemplaza todos los datos actuales. Â¿Confirmar?')) {
+      if (confirm('â ï¸ Esto reemplaza todos los datos actuales. ¿Confirmar?')) {
         state = { ...state, ...imported };
         save();
         refreshAll();
