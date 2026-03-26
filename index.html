@@ -614,6 +614,38 @@ canvas { width: 100% !important; }
 .drink-log-item .drink-time { color:var(--text2); }
 .drink-log-item .drink-info { color:var(--text); }
 .drink-log-item .drink-total { color:var(--cyan); }
+
+/* DATE SELECTOR */
+.date-bar {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 8px 28px;
+  background: rgba(13,20,33,0.9);
+  border-bottom: 1px solid var(--border);
+}
+.date-nav-btn {
+  background: none; border: 1px solid var(--border); color: var(--text2);
+  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  width: 32px; height: 32px; border-radius: 4px; cursor: pointer;
+  transition: all .2s; display:flex; align-items:center; justify-content:center;
+}
+.date-nav-btn:hover { border-color:var(--cyan); color:var(--cyan); box-shadow: 0 0 8px rgba(0,245,255,0.3); }
+.date-label {
+  font-family: var(--font-mono); font-size: 13px; color: var(--cyan);
+  min-width: 160px; text-align: center; cursor: pointer;
+  padding: 4px 12px; border: 1px solid transparent; border-radius: 4px;
+  transition: all .2s;
+}
+.date-label:hover { border-color: var(--border); }
+.date-label.is-today { color: var(--green); }
+.date-today-btn {
+  background: none; border: 1px solid var(--border); color: var(--text2);
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all .2s;
+  text-transform: uppercase;
+}
+.date-today-btn:hover { border-color:var(--green); color:var(--green); }
+.date-input-hidden { position:absolute; opacity:0; pointer-events:none; width:0; height:0; }
 </style>
 </head>
 <body>
@@ -642,6 +674,14 @@ canvas { width: 100% !important; }
   <button class="tab" onclick="switchTab('hidra')">💧 HIDRATACIÓN</button>
 </nav>
 
+
+<div class="date-bar">
+  <button class="date-nav-btn" onclick="changeDate(-1)" title="Día anterior">‹</button>
+  <span class="date-label" id="date-label" onclick="openDatePicker()">Cargando...</span>
+  <button class="date-nav-btn" onclick="changeDate(1)" title="Día siguiente" id="date-next-btn">›</button>
+  <button class="date-today-btn" id="date-today-btn" onclick="goToday()" style="display:none">HOY</button>
+  <input type="date" class="date-input-hidden" id="date-picker-input" onchange="onDatePicked(this.value)">
+</div>
 <main>
 
 <!-- ============ OVERVIEW ============ -->
@@ -1193,7 +1233,7 @@ function addFood() {
   const meal = document.getElementById('food-meal').value;
   if (!name) { alert('Ingresá el nombre de la comida.'); return; }
   
-  const t = today();
+  const t = activeDate;
   if (!state.foods[t]) state.foods[t] = [];
   state.foods[t].push({ name, cal, prot, meal, sem: selectedSem, ts: Date.now() });
   save();
@@ -1210,7 +1250,7 @@ const mealEmojis = { desayuno:'âï¸', almuerzo:'ð¤ï¸', meriend
 const semDot = { verde: 'ð¢', amarillo: 'ð¡', rojo: 'ð´' };
 
 function renderFoodLog() {
-  const t = today();
+  const t = activeDate;
   const foods = state.foods[t] || [];
   document.getElementById('log-date-lbl').textContent = fmt(t);
   
@@ -1288,7 +1328,7 @@ function setFeeling(f) {
 function saveGym() {
   const dur = parseInt(document.getElementById('gym-dur').value) || 0;
   const nota = document.getElementById('gym-nota').value.trim();
-  const t = today();
+  const t = activeDate;
   state.gym[t] = { tipo: selectedGymTipo, dur, feeling: selectedFeeling, nota, ts: Date.now() };
   save();
   document.getElementById('gym-dur').value = '';
@@ -1375,7 +1415,7 @@ function saveSleep() {
   const hora = document.getElementById('sleep-hora').value;
   if (!total) { alert('Ingresá las horas totales.'); return; }
   
-  const t = today();
+  const t = activeDate;
   state.sleep[t] = { total, rem, deep, hora, quality: selectedSleepQuality, ts: Date.now() };
   save();
   document.getElementById('sleep-total').value = '';
@@ -1453,8 +1493,8 @@ function savePeso() {
   const nota = document.getElementById('peso-nota').value.trim();
   if (!val || val < 40 || val > 200) { alert('Ingresá un peso válido.'); return; }
   
-  const t = today();
-  // Remove existing entry for today if any
+  const t = activeDate;
+  // Remove existing entry for this date if any
   state.peso = state.peso.filter(p => p.date !== t);
   state.peso.push({ date: t, val, moment, nota, ts: Date.now() });
   state.peso.sort((a,b) => a.date.localeCompare(b.date));
@@ -1590,8 +1630,8 @@ function chartScales() {
 // ==================== OVERVIEW ====================
 let ovWeightChartInst = null;
 function renderOverview() {
-  // Cal hoy
-  const t = today();
+  // Cal activa
+  const t = activeDate;
   const foods = state.foods[t] || [];
   const cal = foods.reduce((a,b) => a + b.cal, 0);
   const meta = state.calMeta || META_CAL;
@@ -1756,6 +1796,8 @@ function refreshAll() {
 
 // ==================== INIT ====================
 load();
+activeDate = today();
+updateDateUI();
 refreshAll();
 
 
@@ -1889,7 +1931,7 @@ document.addEventListener('click', function(e) {
 const DRINK_ICONS = { agua:'💧', mate:'🧉', cafe:'☕', te:'🍵', otro:'🥤' };
 
 function addDrink(tipo, ml) {
-  const t = today();
+  const t = activeDate;
   if (!state.hidra) state.hidra = {};
   if (!state.hidra[t]) state.hidra[t] = [];
   const now = new Date();
@@ -1914,7 +1956,7 @@ function editHidraMeta() {
 }
 
 function renderHidra() {
-  const t = today();
+  const t = activeDate;
   const items = (state.hidra && state.hidra[t]) || [];
   const meta = state.hidraMeta || 2500;
 
@@ -1959,6 +2001,63 @@ function deleteDrink(date, idx) {
   state.hidra[date].splice(idx, 1);
   save();
   renderHidra();
+}
+
+
+
+// ==================== FECHA ACTIVA ====================
+let activeDate = today(); // arranca en hoy
+
+function changeDate(delta) {
+  const d = new Date(activeDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  const nd = d.toISOString().slice(0,10);
+  // No ir más allá de hoy
+  if (nd > today()) return;
+  activeDate = nd;
+  updateDateUI();
+  refreshAll();
+}
+
+function goToday() {
+  activeDate = today();
+  updateDateUI();
+  refreshAll();
+}
+
+function openDatePicker() {
+  const inp = document.getElementById('date-picker-input');
+  inp.value = activeDate;
+  inp.max = today();
+  inp.showPicker ? inp.showPicker() : inp.click();
+}
+
+function onDatePicked(val) {
+  if (!val || val > today()) return;
+  activeDate = val;
+  updateDateUI();
+  refreshAll();
+}
+
+function updateDateUI() {
+  const lbl = document.getElementById('date-label');
+  const nextBtn = document.getElementById('date-next-btn');
+  const todayBtn = document.getElementById('date-today-btn');
+  if (!lbl) return;
+
+  const isToday = activeDate === today();
+  const d = new Date(activeDate + 'T12:00:00');
+  const dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const txt = isToday
+    ? 'Hoy — ' + dias[d.getDay()] + ' ' + d.getDate() + ' ' + meses[d.getMonth()]
+    : dias[d.getDay()] + ' ' + d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+
+  lbl.textContent = txt;
+  lbl.className = 'date-label' + (isToday ? ' is-today' : '');
+  nextBtn.style.opacity = isToday ? '0.3' : '1';
+  nextBtn.style.pointerEvents = isToday ? 'none' : 'auto';
+  todayBtn.style.display = isToday ? 'none' : 'inline-block';
 }
 
 </script>
