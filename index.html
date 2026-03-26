@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HP · Performance Dashboard</title>
+<title>HP Â· Performance Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -556,31 +556,70 @@ canvas { width: 100% !important; }
 .tag-upper { background: rgba(0,245,255,0.1); color: var(--cyan); border: 1px solid var(--cyan); }
 .tag-lower { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid var(--green); }
 .tag-rest { background: rgba(106,138,170,0.1); color: var(--text2); border: 1px solid var(--text3); }
+
+/* AUTOCOMPLETE */
+.food-autocomplete {
+  position: relative;
+}
+.food-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: #0d1421;
+  border: 1px solid #00f5ff;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999;
+  scrollbar-width: thin;
+  scrollbar-color: #1e3a5f transparent;
+}
+.food-suggestion-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: #c8d8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(30,58,95,0.3);
+  transition: background .15s;
+}
+.food-suggestion-item:hover, .food-suggestion-item.active {
+  background: rgba(0,245,255,0.1);
+  color: #00f5ff;
+}
+.food-suggestion-macros {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #6a8aaa;
+}
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <div class="logo">HP PERFORMANCE<span>DASHBOARD · v1.0</span></div>
+    <div class="logo">HP PERFORMANCE<span>DASHBOARD Â· v1.0</span></div>
   </div>
   <div class="header-date">
     <strong id="hdr-date"></strong>
     <span id="hdr-time"></span>
   </div>
   <div style="display:flex;gap:8px">
-    <button class="btn-export" onclick="importData()">⬆ IMPORT JSON</button>
-    <button class="btn-export" onclick="exportData()">⬇ EXPORT JSON</button>
+    <button class="btn-export" onclick="importData()">â¬ IMPORT JSON</button>
+    <button class="btn-export" onclick="exportData()">â¬ EXPORT JSON</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
 </header>
 
 <nav>
-  <button class="tab active" onclick="switchTab('overview')">📊 OVERVIEW</button>
-  <button class="tab" onclick="switchTab('comidas')">🍽️ COMIDAS</button>
-  <button class="tab" onclick="switchTab('gym')">🏋️ GYM</button>
-  <button class="tab" onclick="switchTab('sueno')">😴 SUEÑO</button>
-  <button class="tab" onclick="switchTab('peso')">⚖️ PESO</button>
+  <button class="tab active" onclick="switchTab('overview')">ð OVERVIEW</button>
+  <button class="tab" onclick="switchTab('comidas')">ð½ï¸ COMIDAS</button>
+  <button class="tab" onclick="switchTab('gym')">ðï¸ GYM</button>
+  <button class="tab" onclick="switchTab('sueno')">ð´ SUEÃO</button>
+  <button class="tab" onclick="switchTab('peso')">âï¸ PESO</button>
 </nav>
 
 <main>
@@ -589,19 +628,19 @@ canvas { width: 100% !important; }
 <div id="tab-overview" class="tab-content active">
   <div class="ov-grid">
     <div class="panel">
-      <div class="panel-title">Calorías hoy</div>
-      <div class="stat-value" id="ov-cal" style="color:var(--cyan)">—</div>
+      <div class="panel-title">CalorÃ­as hoy</div>
+      <div class="stat-value" id="ov-cal" style="color:var(--cyan)">â</div>
       <div class="stat-label">/ <span id="ov-cal-meta">2000</span> kcal meta</div>
       <div class="calorie-bar"><div class="calorie-fill" id="ov-cal-bar" style="background:var(--cyan);width:0%"></div></div>
     </div>
     <div class="panel">
-      <div class="panel-title">Sueño anoche</div>
-      <div class="stat-value" id="ov-sleep" style="color:var(--purple)">—</div>
+      <div class="panel-title">SueÃ±o anoche</div>
+      <div class="stat-value" id="ov-sleep" style="color:var(--purple)">â</div>
       <div class="stat-label">horas totales</div>
     </div>
     <div class="panel">
       <div class="panel-title">Peso actual</div>
-      <div class="stat-value" id="ov-peso" style="color:var(--green)">—</div>
+      <div class="stat-value" id="ov-peso" style="color:var(--green)">â</div>
       <div class="stat-label">meta: 75.5 kg</div>
     </div>
     <div class="panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
@@ -616,7 +655,7 @@ canvas { width: 100% !important; }
               stroke-linecap="round"
               style="transition:stroke-dashoffset 1s ease, stroke .5s"/>
           </svg>
-          <div class="score-num"><span id="score-val">—</span><span class="score-lbl">SCORE</span></div>
+          <div class="score-num"><span id="score-val">â</span><span class="score-lbl">SCORE</span></div>
         </div>
       </div>
     </div>
@@ -633,9 +672,9 @@ canvas { width: 100% !important; }
       </div>
       <div class="heatmap" id="ov-heatmap"></div>
       <div class="flex gap8 mt16" style="flex-wrap:wrap">
-        <span class="tag tag-upper">■ UPPER</span>
-        <span class="tag tag-lower">■ LOWER</span>
-        <span class="tag tag-rest">■ DESCANSO</span>
+        <span class="tag tag-upper">â  UPPER</span>
+        <span class="tag tag-lower">â  LOWER</span>
+        <span class="tag tag-rest">â  DESCANSO</span>
       </div>
     </div>
     <div class="panel">
@@ -647,7 +686,7 @@ canvas { width: 100% !important; }
   <div class="panel mt16">
     <div class="panel-title">Actividad reciente</div>
     <div id="ov-recent" style="font-family:var(--font-mono);font-size:12px;color:var(--text2);line-height:2">
-      Sin actividad registrada aún.
+      Sin actividad registrada aÃºn.
     </div>
   </div>
 </div>
@@ -661,26 +700,29 @@ canvas { width: 100% !important; }
         <div class="panel-title">Registrar comida</div>
         <div class="form-group">
           <label>Comida / Alimento</label>
-          <input type="text" id="food-name" placeholder="Ej: Pechuga de pollo a la plancha">
+          <div class="food-autocomplete">
+          <input type="text" id="food-name" placeholder="Ej: banana, avena, pollo..." autocomplete="off" oninput="onFoodInput(this.value)" onkeydown="onFoodKey(event)">
+          <div class="food-suggestions" id="food-suggestions" style="display:none"></div>
+        </div>
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label>Calorías (kcal)</label>
+            <label>CalorÃ­as (kcal)</label>
             <input type="number" id="food-cal" placeholder="200" min="0">
           </div>
           <div class="form-group">
-            <label>Proteínas (g)</label>
+            <label>ProteÃ­nas (g)</label>
             <input type="number" id="food-prot" placeholder="30" min="0">
           </div>
         </div>
         <div class="form-group">
-          <label>Momento del día</label>
+          <label>Momento del dÃ­a</label>
           <select id="food-meal">
-            <option value="desayuno">☀️ Desayuno</option>
-            <option value="almuerzo">🌤️ Almuerzo</option>
-            <option value="merienda">🍎 Merienda</option>
-            <option value="cena">🌙 Cena</option>
-            <option value="snack">🥜 Snack</option>
+            <option value="desayuno">âï¸ Desayuno</option>
+            <option value="almuerzo">ð¤ï¸ Almuerzo</option>
+            <option value="merienda">ð Merienda</option>
+            <option value="cena">ð Cena</option>
+            <option value="snack">ð¥ Snack</option>
           </select>
         </div>
         <div class="form-group">
@@ -697,9 +739,9 @@ canvas { width: 100% !important; }
         <button class="btn btn-cyan btn-block" onclick="addFood()">+ AGREGAR COMIDA</button>
       </div>
 
-      <!-- STATS DEL DÍA -->
+      <!-- STATS DEL DÃA -->
       <div class="panel">
-        <div class="panel-title">Totales del día</div>
+        <div class="panel-title">Totales del dÃ­a</div>
         <div class="grid-2">
           <div class="stat-card">
             <div class="stat-value" id="total-cal" style="color:var(--cyan)">0</div>
@@ -707,12 +749,12 @@ canvas { width: 100% !important; }
           </div>
           <div class="stat-card">
             <div class="stat-value" id="total-prot" style="color:var(--green)">0g</div>
-            <div class="stat-label">proteínas</div>
+            <div class="stat-label">proteÃ­nas</div>
           </div>
         </div>
         <div class="mt16">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">CALORÍAS</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">CALORÃAS</span>
             <span id="cal-pct" style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">0%</span>
           </div>
           <div class="calorie-bar" style="height:10px">
@@ -721,18 +763,18 @@ canvas { width: 100% !important; }
         </div>
         <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:10px">
           Meta: <span id="meta-cal-lbl" style="color:var(--text2)">2000 kcal</span>
-          &nbsp;·&nbsp;
+          &nbsp;Â·&nbsp;
           <button style="background:none;border:none;color:var(--cyan);cursor:pointer;font-family:var(--font-mono);font-size:11px;" onclick="editMeta()">editar meta</button>
         </div>
       </div>
     </div>
 
-    <!-- LOG DEL DÍA -->
+    <!-- LOG DEL DÃA -->
     <div class="panel">
-      <div class="panel-title">Log de hoy · <span id="log-date-lbl" style="color:var(--text2);text-transform:none;letter-spacing:0;font-family:var(--font-body)"></span></div>
+      <div class="panel-title">Log de hoy Â· <span id="log-date-lbl" style="color:var(--text2);text-transform:none;letter-spacing:0;font-family:var(--font-body)"></span></div>
       <div id="food-log">
         <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">
-          Ningún alimento registrado hoy.
+          NingÃºn alimento registrado hoy.
         </div>
       </div>
     </div>
@@ -746,31 +788,31 @@ canvas { width: 100% !important; }
       <div class="panel section-gap">
         <div class="panel-title">Registrar entrenamiento</div>
         <div class="form-group">
-          <label>Tipo de sesión</label>
+          <label>Tipo de sesiÃ³n</label>
           <div class="feeling-grid mt8">
-            <button class="feeling-btn selected" id="gym-tipo-upper" onclick="setGymTipo('upper')">UPPER 💪</button>
-            <button class="feeling-btn" id="gym-tipo-lower" onclick="setGymTipo('lower')">LOWER 🦵</button>
-            <button class="feeling-btn" id="gym-tipo-rest" onclick="setGymTipo('rest')">DESCANSO 😴</button>
-            <button class="feeling-btn" id="gym-tipo-cardio" onclick="setGymTipo('cardio')">CARDIO 🏃</button>
+            <button class="feeling-btn selected" id="gym-tipo-upper" onclick="setGymTipo('upper')">UPPER ðª</button>
+            <button class="feeling-btn" id="gym-tipo-lower" onclick="setGymTipo('lower')">LOWER ð¦µ</button>
+            <button class="feeling-btn" id="gym-tipo-rest" onclick="setGymTipo('rest')">DESCANSO ð´</button>
+            <button class="feeling-btn" id="gym-tipo-cardio" onclick="setGymTipo('cardio')">CARDIO ð</button>
           </div>
         </div>
         <div class="form-group">
-          <label>Duración (minutos)</label>
+          <label>DuraciÃ³n (minutos)</label>
           <input type="number" id="gym-dur" placeholder="45" min="0" max="240">
         </div>
         <div class="form-group">
-          <label>Sensación post-entreno</label>
+          <label>SensaciÃ³n post-entreno</label>
           <div class="feeling-grid mt8" id="gym-feeling-grid">
-            <button class="feeling-btn" onclick="setFeeling('💀 destruido')">💀 destruido</button>
-            <button class="feeling-btn" onclick="setFeeling('🔥 intenso')">🔥 intenso</button>
-            <button class="feeling-btn" onclick="setFeeling('✅ bueno')">✅ bueno</button>
-            <button class="feeling-btn" onclick="setFeeling('😐 regular')">😐 regular</button>
-            <button class="feeling-btn" onclick="setFeeling('🥱 flojo')">🥱 flojo</button>
+            <button class="feeling-btn" onclick="setFeeling('ð destruido')">ð destruido</button>
+            <button class="feeling-btn" onclick="setFeeling('ð¥ intenso')">ð¥ intenso</button>
+            <button class="feeling-btn" onclick="setFeeling('â bueno')">â bueno</button>
+            <button class="feeling-btn" onclick="setFeeling('ð regular')">ð regular</button>
+            <button class="feeling-btn" onclick="setFeeling('ð¥± flojo')">ð¥± flojo</button>
           </div>
         </div>
         <div class="form-group">
           <label>Nota (opcional)</label>
-          <input type="text" id="gym-nota" placeholder="Ej: Aumenté el peso en press banca">
+          <input type="text" id="gym-nota" placeholder="Ej: AumentÃ© el peso en press banca">
         </div>
         <button class="btn btn-green btn-block" onclick="saveGym()">+ GUARDAR ENTRENAMIENTO</button>
       </div>
@@ -796,12 +838,12 @@ canvas { width: 100% !important; }
   </div>
 </div>
 
-<!-- ============ SUEÑO ============ -->
+<!-- ============ SUEÃO ============ -->
 <div id="tab-sueno" class="tab-content">
   <div class="grid-2">
     <div>
       <div class="panel section-gap">
-        <div class="panel-title">Registrar sueño</div>
+        <div class="panel-title">Registrar sueÃ±o</div>
         <div class="grid-2">
           <div class="form-group">
             <label>Total horas</label>
@@ -814,7 +856,7 @@ canvas { width: 100% !important; }
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label>Sueño profundo (h)</label>
+            <label>SueÃ±o profundo (h)</label>
             <input type="number" id="sleep-deep" placeholder="1.0" min="0" max="4" step="0.25">
           </div>
           <div class="form-group">
@@ -825,38 +867,38 @@ canvas { width: 100% !important; }
         <div class="form-group">
           <label>Calidad percibida</label>
           <div class="feeling-grid mt8" id="sleep-quality-grid">
-            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐⭐⭐ excelente')">⭐⭐⭐⭐⭐</button>
-            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐⭐ bueno')">⭐⭐⭐⭐</button>
-            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐⭐ regular')">⭐⭐⭐</button>
-            <button class="feeling-btn" onclick="setSleepQuality('⭐⭐ malo')">⭐⭐</button>
-            <button class="feeling-btn" onclick="setSleepQuality('⭐ pésimo')">⭐</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­â­â­â­â­ excelente')">â­â­â­â­â­</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­â­â­â­ bueno')">â­â­â­â­</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­â­â­ regular')">â­â­â­</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­â­ malo')">â­â­</button>
+            <button class="feeling-btn" onclick="setSleepQuality('â­ pÃ©simo')">â­</button>
           </div>
         </div>
-        <button class="btn btn-cyan btn-block" onclick="saveSleep()">+ GUARDAR SUEÑO</button>
+        <button class="btn btn-cyan btn-block" onclick="saveSleep()">+ GUARDAR SUEÃO</button>
       </div>
 
       <div class="panel">
-        <div class="panel-title">Promedios (últimos 7 días)</div>
+        <div class="panel-title">Promedios (Ãºltimos 7 dÃ­as)</div>
         <div class="sleep-bar-row">
           <div class="sleep-bar-label">Total</div>
           <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-total" style="background:var(--purple);width:0%"></div></div>
-          <div class="sleep-bar-val" id="sb-total-val">—</div>
+          <div class="sleep-bar-val" id="sb-total-val">â</div>
         </div>
         <div class="sleep-bar-row">
           <div class="sleep-bar-label">REM</div>
           <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-rem" style="background:var(--cyan);width:0%"></div></div>
-          <div class="sleep-bar-val" id="sb-rem-val">—</div>
+          <div class="sleep-bar-val" id="sb-rem-val">â</div>
         </div>
         <div class="sleep-bar-row">
           <div class="sleep-bar-label">Profundo</div>
           <div class="sleep-bar-track"><div class="sleep-bar-fill" id="sb-deep" style="background:var(--green);width:0%"></div></div>
-          <div class="sleep-bar-val" id="sb-deep-val">—</div>
+          <div class="sleep-bar-val" id="sb-deep-val">â</div>
         </div>
       </div>
     </div>
 
     <div class="panel">
-      <div class="panel-title">Historial de sueño</div>
+      <div class="panel-title">Historial de sueÃ±o</div>
       <div class="chart-container" style="height:160px"><canvas id="sleep-chart"></canvas></div>
       <div class="entry-list mt16" id="sleep-history">
         <div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:30px 0">Sin registros.</div>
@@ -878,14 +920,14 @@ canvas { width: 100% !important; }
         <div class="form-group">
           <label>Momento</label>
           <select id="peso-moment">
-            <option value="mañana">🌅 Mañana (en ayunas)</option>
-            <option value="tarde">🌤️ Tarde</option>
-            <option value="noche">🌙 Noche</option>
+            <option value="maÃ±ana">ð MaÃ±ana (en ayunas)</option>
+            <option value="tarde">ð¤ï¸ Tarde</option>
+            <option value="noche">ð Noche</option>
           </select>
         </div>
         <div class="form-group">
           <label>Nota (opcional)</label>
-          <input type="text" id="peso-nota" placeholder="Ej: Después del gym">
+          <input type="text" id="peso-nota" placeholder="Ej: DespuÃ©s del gym">
         </div>
         <button class="btn btn-green btn-block" onclick="savePeso()">+ GUARDAR PESO</button>
       </div>
@@ -898,15 +940,15 @@ canvas { width: 100% !important; }
             <div class="stat-label">Peso inicial</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="peso-actual" style="color:var(--cyan)">—</div>
+            <div class="stat-value" id="peso-actual" style="color:var(--cyan)">â</div>
             <div class="stat-label">Peso actual</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="peso-perdido" style="color:var(--green)">—</div>
+            <div class="stat-value" id="peso-perdido" style="color:var(--green)">â</div>
             <div class="stat-label">Perdido</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="peso-falta" style="color:var(--yellow)">—</div>
+            <div class="stat-value" id="peso-falta" style="color:var(--yellow)">â</div>
             <div class="stat-label">Para la meta</div>
           </div>
         </div>
@@ -919,7 +961,7 @@ canvas { width: 100% !important; }
             <div class="calorie-fill" id="peso-bar" style="background:linear-gradient(90deg,var(--green),var(--cyan));width:0%"></div>
           </div>
           <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:6px">
-            Meta: 75.5 kg · Inicio: 82.45 kg (11 Mar 2026)
+            Meta: 75.5 kg Â· Inicio: 82.45 kg (11 Mar 2026)
           </div>
         </div>
       </div>
@@ -982,7 +1024,7 @@ function notif(msg) {
   document.querySelectorAll('.notif').forEach(n => n.remove());
   const el = document.createElement('div');
   el.className = 'notif';
-  el.textContent = '✓ ' + msg;
+  el.textContent = 'â ' + msg;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2700);
 }
@@ -990,7 +1032,7 @@ function notif(msg) {
 // ==================== HEADER ====================
 function updateHeader() {
   const now = new Date();
-  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const dias = ['Domingo','Lunes','Martes','MiÃ©rcoles','Jueves','Viernes','SÃ¡bado'];
   const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   document.getElementById('hdr-date').textContent = 
     `${dias[now.getDay()]} ${now.getDate()} ${meses[now.getMonth()]} ${now.getFullYear()}`;
@@ -1027,7 +1069,7 @@ function addFood() {
   const cal = parseFloat(document.getElementById('food-cal').value) || 0;
   const prot = parseFloat(document.getElementById('food-prot').value) || 0;
   const meal = document.getElementById('food-meal').value;
-  if (!name) { alert('Ingresá el nombre de la comida.'); return; }
+  if (!name) { alert('IngresÃ¡ el nombre de la comida.'); return; }
   
   const t = today();
   if (!state.foods[t]) state.foods[t] = [];
@@ -1042,8 +1084,8 @@ function addFood() {
   notif('Comida agregada: ' + name);
 }
 
-const mealEmojis = { desayuno:'☀️', almuerzo:'🌤️', merienda:'🍎', cena:'🌙', snack:'🥜' };
-const semDot = { verde: '🟢', amarillo: '🟡', rojo: '🔴' };
+const mealEmojis = { desayuno:'âï¸', almuerzo:'ð¤ï¸', merienda:'ð', cena:'ð', snack:'ð¥' };
+const semDot = { verde: 'ð¢', amarillo: 'ð¡', rojo: 'ð´' };
 
 function renderFoodLog() {
   const t = today();
@@ -1070,7 +1112,7 @@ function renderFoodLog() {
         <span class="food-name">${f.name}</span>
         ${f.prot ? `<span class="food-cal" style="color:var(--green)">${f.prot}g prot</span>` : ''}
         <span class="food-cal">${f.cal} kcal</span>
-        <button class="food-delete" onclick="deleteFood('${t}',${idx})">×</button>
+        <button class="food-delete" onclick="deleteFood('${t}',${idx})">Ã</button>
       </div>`;
       totCal += f.cal;
       totProt += f.prot;
@@ -1078,7 +1120,7 @@ function renderFoodLog() {
     html += '</div>';
   });
   
-  if (!html) html = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">Ningún alimento registrado hoy.</div>';
+  if (!html) html = '<div style="color:var(--text3);font-family:var(--font-mono);font-size:13px;text-align:center;padding:40px 0">NingÃºn alimento registrado hoy.</div>';
   
   document.getElementById('food-log').innerHTML = html;
   document.getElementById('total-cal').textContent = totCal;
@@ -1099,7 +1141,7 @@ function deleteFood(date, idx) {
 }
 
 function editMeta() {
-  const v = prompt('Meta calórica diaria (kcal):', state.calMeta || META_CAL);
+  const v = prompt('Meta calÃ³rica diaria (kcal):', state.calMeta || META_CAL);
   if (v && !isNaN(v)) {
     state.calMeta = parseInt(v);
     save();
@@ -1153,9 +1195,9 @@ function renderGymHistory() {
       <span class="tag ${tipoTag[g.tipo]||'tag-rest'}">${tipoLabel[g.tipo]||g.tipo.toUpperCase()}</span>
       ${g.dur ? `<span style="color:var(--text2);font-size:11px">${g.dur}min</span>` : ''}
       <span style="font-size:13px">${g.feeling||''}</span>
-      <button class="btn btn-sm btn-red" onclick="deleteGym('${date}')">×</button>
+      <button class="btn btn-sm btn-red" onclick="deleteGym('${date}')">Ã</button>
     </div>`;
-    if (g.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 6px;border-bottom:1px solid rgba(30,58,95,0.4)">💬 ${g.nota}</div>`;
+    if (g.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 6px;border-bottom:1px solid rgba(30,58,95,0.4)">ð¬ ${g.nota}</div>`;
   });
   document.getElementById('gym-history').innerHTML = html;
 }
@@ -1190,13 +1232,13 @@ function renderHeatmap(elId, days) {
       else cls = 'rest';
     }
     if (isToday) cls += ' today';
-    const label = g ? (g.tipo === 'upper' ? 'U' : g.tipo === 'lower' ? 'L' : g.tipo === 'cardio' ? 'C' : '—') : d.getDate();
+    const label = g ? (g.tipo === 'upper' ? 'U' : g.tipo === 'lower' ? 'L' : g.tipo === 'cardio' ? 'C' : 'â') : d.getDate();
     html += `<div class="hm-cell ${cls}" title="${key}">${label}</div>`;
   }
   el.innerHTML = html;
 }
 
-// ==================== SUEÑO ====================
+// ==================== SUEÃO ====================
 function setSleepQuality(q) {
   selectedSleepQuality = q;
   document.querySelectorAll('#sleep-quality-grid .feeling-btn').forEach(b => {
@@ -1209,7 +1251,7 @@ function saveSleep() {
   const rem = parseFloat(document.getElementById('sleep-rem').value) || 0;
   const deep = parseFloat(document.getElementById('sleep-deep').value) || 0;
   const hora = document.getElementById('sleep-hora').value;
-  if (!total) { alert('Ingresá las horas totales.'); return; }
+  if (!total) { alert('IngresÃ¡ las horas totales.'); return; }
   
   const t = today();
   state.sleep[t] = { total, rem, deep, hora, quality: selectedSleepQuality, ts: Date.now() };
@@ -1218,12 +1260,12 @@ function saveSleep() {
   document.getElementById('sleep-rem').value = '';
   document.getElementById('sleep-deep').value = '';
   renderSleep();
-  notif('Sueño registrado');
+  notif('SueÃ±o registrado');
 }
 
 let sleepChartInst = null;
 function renderSleep() {
-  // Promedios 7 días
+  // Promedios 7 dÃ­as
   const keys = Object.keys(state.sleep).sort().slice(-7);
   if (keys.length) {
     const avgTotal = keys.reduce((a,k) => a + state.sleep[k].total, 0) / keys.length;
@@ -1269,7 +1311,7 @@ function renderSleep() {
       <span style="color:var(--cyan);font-size:11px">REM ${s.rem}h</span>
       <span style="color:var(--green);font-size:11px">Prof ${s.deep}h</span>
       <span style="font-size:13px">${s.quality ? s.quality.split(' ')[0] : ''}</span>
-      <button class="btn btn-sm btn-red" onclick="deleteSleep('${date}')">×</button>
+      <button class="btn btn-sm btn-red" onclick="deleteSleep('${date}')">Ã</button>
     </div>`;
   });
   document.getElementById('sleep-history').innerHTML = html;
@@ -1287,7 +1329,7 @@ function savePeso() {
   const val = parseFloat(document.getElementById('peso-val').value);
   const moment = document.getElementById('peso-moment').value;
   const nota = document.getElementById('peso-nota').value.trim();
-  if (!val || val < 40 || val > 200) { alert('Ingresá un peso válido.'); return; }
+  if (!val || val < 40 || val > 200) { alert('IngresÃ¡ un peso vÃ¡lido.'); return; }
   
   const t = today();
   // Remove existing entry for today if any
@@ -1313,7 +1355,7 @@ function renderPeso() {
     document.getElementById('peso-perdido').textContent = (perdido > 0 ? '-' : '+') + Math.abs(perdido).toFixed(1) + ' kg';
     document.getElementById('peso-perdido').style.color = perdido > 0 ? 'var(--green)' : 'var(--red)';
     const falta = last.val - META_PESO;
-    document.getElementById('peso-falta').textContent = (falta > 0 ? '-' : '✓ ') + Math.abs(falta).toFixed(1) + ' kg';
+    document.getElementById('peso-falta').textContent = (falta > 0 ? '-' : 'â ') + Math.abs(falta).toFixed(1) + ' kg';
     const totalToLose = INICIO_PESO - META_PESO;
     const lost = INICIO_PESO - last.val;
     const pct = Math.max(0, Math.min(100, Math.round(lost / totalToLose * 100)));
@@ -1369,14 +1411,14 @@ function renderPeso() {
   [...entries].reverse().slice(0,30).forEach((e, i, arr) => {
     const prev = arr[i+1];
     const delta = prev ? e.val - prev.val : null;
-    const deltaHtml = delta !== null ? `<span class="entry-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</span>` : '<span class="entry-delta" style="color:var(--text3)">—</span>';
+    const deltaHtml = delta !== null ? `<span class="entry-delta ${delta > 0 ? 'delta-up' : 'delta-down'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)}</span>` : '<span class="entry-delta" style="color:var(--text3)">â</span>';
     html += `<div class="entry-row">
-      <span class="entry-date">${fmt(e.date)} · ${e.moment}</span>
+      <span class="entry-date">${fmt(e.date)} Â· ${e.moment}</span>
       <span class="entry-val">${e.val.toFixed(1)} kg</span>
       ${deltaHtml}
-      <button class="btn btn-sm btn-red" onclick="deletePeso('${e.date}')">×</button>
+      <button class="btn btn-sm btn-red" onclick="deletePeso('${e.date}')">Ã</button>
     </div>`;
-    if (e.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 4px">💬 ${e.nota}</div>`;
+    if (e.nota) html += `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text2);padding:2px 12px 4px">ð¬ ${e.nota}</div>`;
   });
   document.getElementById('peso-history').innerHTML = html;
 }
@@ -1436,13 +1478,13 @@ function renderOverview() {
   const calPct = Math.min(100, cal/meta*100);
   document.getElementById('ov-cal-bar').style.width = calPct + '%';
   
-  // Sueño
+  // SueÃ±o
   const sleepToday = state.sleep[t];
-  document.getElementById('ov-sleep').textContent = sleepToday ? sleepToday.total + 'h' : '—';
+  document.getElementById('ov-sleep').textContent = sleepToday ? sleepToday.total + 'h' : 'â';
   
   // Peso
   const lastPeso = state.peso[state.peso.length - 1];
-  document.getElementById('ov-peso').textContent = lastPeso ? lastPeso.val.toFixed(1) + ' kg' : '—';
+  document.getElementById('ov-peso').textContent = lastPeso ? lastPeso.val.toFixed(1) + ' kg' : 'â';
   
   // Score semanal (0-100)
   const score = calcScore();
@@ -1488,23 +1530,23 @@ function renderOverview() {
   // Recent activity
   const recents = [];
   Object.entries(state.gym).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,3).forEach(([d,g]) => {
-    recents.push(`${fmt(d)} · 🏋️ ${g.tipo.toUpperCase()} ${g.dur ? g.dur+'min' : ''} ${g.feeling||''}`);
+    recents.push(`${fmt(d)} Â· ðï¸ ${g.tipo.toUpperCase()} ${g.dur ? g.dur+'min' : ''} ${g.feeling||''}`);
   });
   Object.entries(state.sleep).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,2).forEach(([d,s]) => {
-    recents.push(`${fmt(d)} · 😴 Sueño ${s.total}h`);
+    recents.push(`${fmt(d)} Â· ð´ SueÃ±o ${s.total}h`);
   });
   state.peso.slice(-2).reverse().forEach(p => {
-    recents.push(`${fmt(p.date)} · ⚖️ Peso ${p.val.toFixed(1)} kg`);
+    recents.push(`${fmt(p.date)} Â· âï¸ Peso ${p.val.toFixed(1)} kg`);
   });
   recents.sort((a,b) => b.slice(0,8).localeCompare(a.slice(0,8)));
-  document.getElementById('ov-recent').innerHTML = recents.slice(0,6).map(r => `<div style="padding:4px 0;border-bottom:1px solid rgba(30,58,95,0.3)">${r}</div>`).join('') || 'Sin actividad registrada aún.';
+  document.getElementById('ov-recent').innerHTML = recents.slice(0,6).map(r => `<div style="padding:4px 0;border-bottom:1px solid rgba(30,58,95,0.3)">${r}</div>`).join('') || 'Sin actividad registrada aÃºn.';
 }
 
 function calcScore() {
-  // Score semanal basado en gym (40%) + sueño (30%) + peso (30%)
+  // Score semanal basado en gym (40%) + sueÃ±o (30%) + peso (30%)
   let total = 0, max = 0;
   
-  // Gym: 4 días/sem esperados (L,M,J,V)
+  // Gym: 4 dÃ­as/sem esperados (L,M,J,V)
   const gymKeys = Object.keys(state.gym);
   const now = new Date();
   const dow = now.getDay();
@@ -1521,7 +1563,7 @@ function calcScore() {
   const gymScore = Math.min(40, Math.round(gymDays / 4 * 40));
   total += gymScore; max += 40;
   
-  // Sueño: prom 7 días, meta 7h
+  // SueÃ±o: prom 7 dÃ­as, meta 7h
   const sleepKeys = Object.keys(state.sleep).sort().slice(-7);
   if (sleepKeys.length) {
     const avg = sleepKeys.reduce((a,k) => a + state.sleep[k].total, 0) / sleepKeys.length;
@@ -1530,7 +1572,7 @@ function calcScore() {
   }
   max += 30;
   
-  // Peso: si está bajando
+  // Peso: si estÃ¡ bajando
   if (state.peso.length >= 2) {
     const first = state.peso[0].val;
     const last = state.peso[state.peso.length-1].val;
@@ -1556,7 +1598,7 @@ function handleImport(e) {
   reader.onload = function(ev) {
     try {
       const imported = JSON.parse(ev.target.result);
-      if (confirm('⚠️ Esto reemplaza todos los datos actuales. ¿Confirmar?')) {
+      if (confirm('â ï¸ Esto reemplaza todos los datos actuales. Â¿Confirmar?')) {
         state = { ...state, ...imported };
         save();
         refreshAll();
@@ -1592,6 +1634,132 @@ function refreshAll() {
 // ==================== INIT ====================
 load();
 refreshAll();
+
+
+// ==================== BASE DE DATOS NUTRICIONAL ====================
+const NUTRICION_DB = [
+  // Frutas
+  {n:'Banana',c:89,p:1.1,u:'1 unidad (120g)'},{n:'Manzana',c:52,p:0.3,u:'1 unidad (150g)'},
+  {n:'Naranja',c:47,p:0.9,u:'1 unidad (130g)'},{n:'Pera',c:57,p:0.4,u:'1 unidad (150g)'},
+  {n:'Durazno',c:39,p:0.9,u:'1 unidad (130g)'},{n:'Uvas',c:69,p:0.7,u:'100g'},
+  {n:'Frutillas',c:32,p:0.7,u:'100g'},{n:'Mandarina',c:53,p:0.8,u:'1 unidad (100g)'},
+  {n:'Kiwi',c:61,p:1.1,u:'1 unidad (100g)'},{n:'Sandia',c:30,p:0.6,u:'200g'},
+  {n:'Melón',c:34,p:0.8,u:'200g'},{n:'Ananá',c:50,p:0.5,u:'100g'},
+  // Cereales y granos
+  {n:'Avena',c:389,p:17,u:'100g'},{n:'Avena cocida',c:71,p:2.5,u:'100g'},
+  {n:'Arroz blanco cocido',c:130,p:2.7,u:'100g'},{n:'Arroz integral cocido',c:123,p:2.6,u:'100g'},
+  {n:'Pan integral',c:247,p:9,u:'100g'},{n:'Pan blanco',c:265,p:8,u:'100g'},
+  {n:'Pan integral (1 rebanada)',c:70,p:2.5,u:'1 rebanada (28g)'},
+  {n:'Pasta cocida',c:131,p:5,u:'100g'},{n:'Granola',c:450,p:10,u:'100g'},
+  {n:'Maíz cocido',c:96,p:3.4,u:'100g'},
+  // Proteínas animales
+  {n:'Pechuga de pollo',c:165,p:31,u:'100g'},{n:'Pechuga de pollo (150g)',c:248,p:46,u:'150g'},
+  {n:'Milanesa de pollo',c:220,p:25,u:'100g'},{n:'Muslo de pollo',c:209,p:26,u:'100g'},
+  {n:'Carne picada magra',c:215,p:26,u:'100g'},{n:'Bife de lomo',c:250,p:28,u:'100g'},
+  {n:'Asado de tira',c:290,p:25,u:'100g'},{n:'Peceto',c:170,p:28,u:'100g'},
+  {n:'Salmón',c:208,p:20,u:'100g'},{n:'Atún en agua',c:84,p:20,u:'100g (escurrido)'},
+  {n:'Atún en aceite',c:198,p:19,u:'100g'},{n:'Merluza',c:92,p:17,u:'100g'},
+  {n:'Sardinas en lata',c:208,p:25,u:'100g'},{n:'Camarones',c:99,p:24,u:'100g'},
+  // Huevos y lácteos
+  {n:'Huevo entero',c:155,p:13,u:'100g'},{n:'Huevo entero (1 unidad)',c:72,p:6,u:'1 huevo (46g)'},
+  {n:'Clara de huevo',c:52,p:11,u:'100g'},{n:'Clara de huevo (1)',c:17,p:3.6,u:'1 clara (33g)'},
+  {n:'Leche entera',c:61,p:3.2,u:'100ml'},{n:'Leche descremada',c:35,p:3.4,u:'100ml'},
+  {n:'Yogur griego natural',c:59,p:10,u:'100g'},{n:'Yogur descremado',c:56,p:5,u:'100g'},
+  {n:'Queso cottage',c:98,p:11,u:'100g'},{n:'Queso fresco',c:264,p:17,u:'100g'},
+  {n:'Queso cremoso',c:330,p:20,u:'100g'},{n:'Queso rallado',c:402,p:36,u:'100g'},
+  // Legumbres
+  {n:'Lentejas cocidas',c:116,p:9,u:'100g'},{n:'Garbanzos cocidos',c:164,p:9,u:'100g'},
+  {n:'Porotos negros cocidos',c:132,p:9,u:'100g'},{n:'Porotos blancos cocidos',c:127,p:9,u:'100g'},
+  {n:'Edamame',c:121,p:11,u:'100g'},
+  // Verduras
+  {n:'Brócoli',c:34,p:2.8,u:'100g'},{n:'Espinaca',c:23,p:2.9,u:'100g'},
+  {n:'Zanahoria',c:41,p:0.9,u:'100g'},{n:'Tomate',c:18,p:0.9,u:'100g'},
+  {n:'Lechuga',c:15,p:1.4,u:'100g'},{n:'Pepino',c:16,p:0.7,u:'100g'},
+  {n:'Zapallo',c:26,p:1,u:'100g'},{n:'Papa cocida',c:87,p:1.9,u:'100g'},
+  {n:'Batata cocida',c:90,p:2,u:'100g'},{n:'Pimiento rojo',c:31,p:1,u:'100g'},
+  {n:'Cebolla',c:40,p:1.1,u:'100g'},{n:'Ajo',c:149,p:6.4,u:'100g'},
+  {n:'Acelga',c:19,p:1.8,u:'100g'},{n:'Choclo',c:96,p:3.4,u:'100g'},
+  // Proteínas en polvo y suplementos
+  {n:'Proteína whey',c:120,p:24,u:'1 scoop (30g)'},{n:'Caseína',c:110,p:24,u:'1 scoop (30g)'},
+  // Snacks y varios
+  {n:'Mantequilla de maní',c:588,p:25,u:'100g'},{n:'Mantequilla de maní (1 cda)',c:94,p:4,u:'1 cda (16g)'},
+  {n:'Almendras',c:579,p:21,u:'100g'},{n:'Almendras (puñado)',c:170,p:6,u:'30g'},
+  {n:'Nueces',c:654,p:15,u:'100g'},{n:'Maní',c:567,p:26,u:'100g'},
+  {n:'Tortitas de arroz',c:384,p:8,u:'100g'},{n:'Tortita de arroz (1)',c:35,p:0.7,u:'1 unidad (9g)'},
+  {n:'Aceite de oliva',c:884,p:0,u:'100ml'},{n:'Aceite de oliva (1 cda)',c:119,p:0,u:'1 cda (13.5ml)'},
+  {n:'Palta',c:160,p:2,u:'100g'},{n:'Palta (1/2)',c:120,p:1.5,u:'75g'},
+  // Comidas rápidas / habituales
+  {n:'Milanesa napolitana',c:280,p:22,u:'100g'},{n:'Pizza muzzarella (1 porción)',c:270,p:12,u:'100g'},
+  {n:'Empanada de carne',c:290,p:12,u:'1 unidad (90g)'},{n:'Medialunas',c:390,p:8,u:'100g'},
+  {n:'Facturas',c:380,p:7,u:'100g'},
+];
+
+let __activeSuggIdx = -1;
+let __suggestions = [];
+
+function normStr(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+}
+
+function onFoodInput(val) {
+  const box = document.getElementById('food-suggestions');
+  if (!val || val.length < 2) { box.style.display='none'; return; }
+  const q = normStr(val);
+  __suggestions = NUTRICION_DB.filter(f => normStr(f.n).includes(q)).slice(0,8);
+  if (!__suggestions.length) { box.style.display='none'; return; }
+  __activeSuggIdx = -1;
+  box.innerHTML = __suggestions.map((f,i) => 
+    `<div class="food-suggestion-item" onclick="selectFood(${i})" data-idx="${i}">
+      <span>${f.n}</span>
+      <span class="food-suggestion-macros">${f.c} kcal · ${f.p}g prot · ${f.u}</span>
+    </div>`
+  ).join('');
+  box.style.display = 'block';
+}
+
+function onFoodKey(e) {
+  const box = document.getElementById('food-suggestions');
+  if (box.style.display === 'none') return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    __activeSuggIdx = Math.min(__activeSuggIdx + 1, __suggestions.length - 1);
+    updateActiveSugg();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    __activeSuggIdx = Math.max(__activeSuggIdx - 1, -1);
+    updateActiveSugg();
+  } else if (e.key === 'Enter' && __activeSuggIdx >= 0) {
+    e.preventDefault();
+    selectFood(__activeSuggIdx);
+  } else if (e.key === 'Escape') {
+    box.style.display = 'none';
+  }
+}
+
+function updateActiveSugg() {
+  document.querySelectorAll('.food-suggestion-item').forEach((el,i) => {
+    el.classList.toggle('active', i === __activeSuggIdx);
+  });
+}
+
+function selectFood(idx) {
+  const f = __suggestions[idx];
+  if (!f) return;
+  document.getElementById('food-name').value = f.n;
+  document.getElementById('food-cal').value = f.c;
+  document.getElementById('food-prot').value = f.p;
+  document.getElementById('food-suggestions').style.display = 'none';
+  __suggestions = [];
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.food-autocomplete')) {
+    const box = document.getElementById('food-suggestions');
+    if (box) box.style.display = 'none';
+  }
+});
+
 </script>
 </body>
-</html>
+  </html>
