@@ -1155,6 +1155,9 @@ let state = {
   peso: [],        // [ {date, val, moment, nota, ts} ]
 };
 
+// Fecha activa global
+var activeDate = null;
+
 // UI state
 let selectedSem = 'verde';
 let selectedFeeling = '';
@@ -2006,7 +2009,7 @@ function deleteDrink(date, idx) {
 
 
 // ==================== FECHA ACTIVA ====================
-let activeDate = today(); // arranca en hoy
+var activeDate; // arranca en hoy
 
 function changeDate(delta) {
   const d = new Date(activeDate + 'T12:00:00');
